@@ -13,7 +13,18 @@ class User {
     this.phone,
     this.avatar,
     this.createdAt,
+    this.authProvider,
   });
+
+  final String? authProvider;
+
+  factory User.empty() {
+    return User(
+      id: 0,
+      name: '',
+      email: '',
+    );
+  }
 
   factory User.fromJson(Map<String, dynamic> json) {
     int safeParseInt(dynamic value) {
@@ -37,6 +48,7 @@ class User {
       createdAt: json['created_at'] != null 
           ? DateTime.tryParse(json['created_at'].toString()) 
           : null,
+      authProvider: json['auth_provider']?.toString(),
     );
   }
 

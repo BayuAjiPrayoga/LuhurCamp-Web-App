@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User; // Avoid conflict with user_model
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/config/api_config.dart';
 import '../models/user_model.dart';
 
@@ -142,7 +144,6 @@ class AuthRepository {
       return UpdateProfileResult.error(message: e.toString());
     }
   }
-  }
 
   Future<AuthResult> updateAvatar(String imagePath) async {
     try {
@@ -195,6 +196,64 @@ class AuthRepository {
       return AuthResult.error(
         message: e.response?.data['message'] ?? 'Network error',
       );
+    } catch (e) {
+      return AuthResult.error(message: e.toString());
+    }
+  }
+  Future<AuthResult> loginWithGoogle() async {
+    try {
+      print('GOOGLE SIGN IN STARTED');
+      // 1. Trigger Google Sign-In
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        print('GOOGLE USER NULL');
+        return AuthResult.error(message: 'Login Google dibatalkan');
+      }
+      print('GOOGLE USER OBTAINED: ${googleUser.email}');
+
+      // 2. Obtain OAuth Details
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      print('GOOGLE AUTH OBTAINED: AccessToken=${googleAuth.accessToken != null}, IDToken=${googleAuth.idToken != null}');
+
+      // 3. Create Credential for Firebase
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // 4. Sign-in to Firebase
+      print('SIGNING IN TO FIREBASE...');
+      final UserCredential userCredential = 
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      print('FIREBASE SIGN IN SUCCESS: ${userCredential.user?.uid}');
+      
+      final idToken = await userCredential.user?.getIdToken();
+
+      if (idToken == null) {
+        print('ERROR: FIREBASE ID TOKEN IS NULL');
+        return AuthResult.error(message: 'Gagal mendapatkan Firebase ID Token');
+      }
+      print('FIREBASE ID TOKEN OBTAINED');
+
+      // 5. Send Token to Backend
+      print('POSTING TO BACKEND: /auth/firebase-login');
+      final response = await _apiClient.post(
+        '/auth/firebase-login',
+        data: {'token': idToken},
+      );
+      print('BACKEND RESPONSE: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = response.data['data'];
+        final token = responseData['token'];
+        final user = User.fromJson(responseData['user']);
+
+        await _apiClient.saveToken(token);
+        
+        return AuthResult.success(user: user, token: token);
+      }
+
+      return AuthResult.error(message: 'Login Backend failed');
     } catch (e) {
       return AuthResult.error(message: e.toString());
     }

@@ -6,16 +6,11 @@ class ApiConfig {
     // ➤ Production URL (Railway)
     return 'https://skycampmobile-production.up.railway.app/api/v1';
 
-    /* 
-    // ➤ Local Development (Device Fisik)
-    // return 'http://192.168.1.117:8000/api/v1';
-    
     // ➤ Android Emulator
     // return 'http://10.0.2.2:8000/api/v1';
     
-    // ➤ Web (Localhost)
-    // return 'http://127.0.0.1:8000/api/v1';
-    */
+    // ➤ Local Development (Device Fisik)
+    // return 'http://192.168.1.117:8000/api/v1';
   }
 
   // API Endpoints
@@ -23,7 +18,7 @@ class ApiConfig {
   static const String register = '/register';
   static const String logout = '/logout';
   static const String user = '/user';
-  static const String updateProfile = '/user/profile';
+  static const String updateProfile = '/user';
   
   static const String kavlings = '/kavlings';
   static const String peralatan = '/peralatan';

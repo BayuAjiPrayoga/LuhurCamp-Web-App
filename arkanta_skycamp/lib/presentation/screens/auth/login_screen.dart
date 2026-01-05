@@ -39,6 +39,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _handleGoogleLogin() async {
+    final success = await ref.read(authProvider.notifier).loginWithGoogle();
+    
+    if (success && mounted) {
+      context.go('/home');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -163,13 +171,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: const Text('Masuk'),
               ),
 
+              const SizedBox(height: 16),
+
+              // Google Login Button
+              OutlinedButton.icon(
+                onPressed: isLoading ? null : _handleGoogleLogin,
+                icon: Image.asset('assets/images/google_logo.png', height: 24),
+                label: const Text('Masuk dengan Google'),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 24),
 
               // Register Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Text(
+                   Text(
                     'Belum punya akun? ',
                     style: TextStyle(color: AppColors.textSecondary),
                   ),

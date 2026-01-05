@@ -99,7 +99,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         );
       }
     }
-    }
   }
 
   Future<void> _handleAvatarUpload() async {
@@ -107,7 +106,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Show loading
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Mengupload foto...')),
@@ -143,7 +141,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Ganti Password'),
         content: Form(
           key: formKey,
@@ -153,21 +151,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               CustomTextField(
                 controller: currentPassController,
                 label: 'Password Saat Ini',
-                isPassword: true,
+                obscureText: true,
                 validator: (v) => v!.isEmpty ? 'Wajib diisi' : null,
               ),
               const SizedBox(height: 12),
               CustomTextField(
                 controller: newPassController,
                 label: 'Password Baru',
-                isPassword: true,
+                obscureText: true,
                 validator: (v) => v!.length < 8 ? 'Min. 8 karakter' : null,
               ),
               const SizedBox(height: 12),
               CustomTextField(
                 controller: confirmPassController,
                 label: 'Konfirmasi Password',
-                isPassword: true,
+                obscureText: true,
                 validator: (v) {
                   if (v != newPassController.text) return 'Password tidak sama';
                   return null;
@@ -178,17 +176,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Batal'),
           ),
           ElevatedButton(
             onPressed: () async {
               if (formKey.currentState!.validate()) {
-                final nav = Navigator.of(context);
-                final messenger = ScaffoldMessenger.of(context);
-                
-                // Show local loading or disable button (simplified here)
-                nav.pop(); // Close dialog first
+                Navigator.pop(dialogContext);
 
                 final result = await ref.read(authProvider.notifier).changePassword(
                   currentPassword: currentPassController.text,
@@ -196,15 +190,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   confirmPassword: confirmPassController.text,
                 );
 
+                if (!mounted) return;
+
                 if (result.isSuccess) {
-                  messenger.showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Password berhasil diubah!'),
                       backgroundColor: AppColors.success,
                     ),
                   );
                 } else {
-                  messenger.showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(result.message ?? 'Gagal mengubah password'),
                       backgroundColor: AppColors.error,
@@ -268,27 +264,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ),
                   ),
-                    ),
-                  if (_isEditing || true) // Always show camera icon
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: _handleAvatarUpload,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: _handleAvatarUpload,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
@@ -313,7 +307,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     label: 'Email',
                     hint: 'Masukkan email',
                     prefixIcon: Icons.email_outlined,
-                    enabled: false, // Email tidak bisa diubah
+                    enabled: false,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16),
@@ -351,11 +345,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               title: 'Foto Saya',
               onTap: () => context.push('/gallery'),
             ),
-            _MenuItem(
-              icon: Icons.lock_outline,
-              title: 'Ganti Password',
-              onTap: _showChangePasswordDialog,
-            ),
+            if (user?.authProvider != 'google')
+              _MenuItem(
+                icon: Icons.lock_outline,
+                title: 'Ganti Password',
+                onTap: _showChangePasswordDialog,
+              ),
             _MenuItem(
               icon: Icons.help_outline,
               title: 'Bantuan (WhatsApp)',

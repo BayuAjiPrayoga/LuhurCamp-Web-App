@@ -170,4 +170,70 @@ class AuthController extends Controller
             'message' => 'Password berhasil diubah',
         ]);
     }
+    /**
+     * Firebase Login (Hybrid)
+     */
+    public function firebaseLogin(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+        ]);
+
+        try {
+            $auth = app('firebase.auth');
+            $verifiedIdToken = $auth->verifyIdToken($request->token);
+            $uid = $verifiedIdToken->claims()->get('sub');
+            $email = $verifiedIdToken->claims()->get('email');
+            $name = $verifiedIdToken->claims()->get('name') ?? 'User';
+            $picture = $verifiedIdToken->claims()->get('picture');
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Firebase Token: ' . $e->getMessage(),
+            ], 401);
+        }
+
+        // 1. Try to find user by Firebase UID
+        $user = User::where('firebase_uid', $uid)->first();
+
+        // 2. If not found, try to find by Email (Link Account)
+        if (!$user && $email) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                // Link account
+                $user->firebase_uid = $uid;
+                $user->auth_provider = 'google'; // or hybrid
+                if (!$user->avatar && $picture) {
+                    $user->avatar = $picture; // Use google avatar if none exists
+                }
+                $user->save();
+            }
+        }
+
+        // 3. If still not found, Create New User
+        if (!$user) {
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'password' => Hash::make(str()->random(16)), // Random password
+                'firebase_uid' => $uid,
+                'auth_provider' => 'google',
+                'role' => 'customer',
+                'avatar' => $picture,
+            ]);
+        }
+
+        // 4. Issue Sanctum Token
+        $token = $user->createToken('mobile-app')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'data' => [
+                'user' => new UserResource($user),
+                'token' => $token,
+            ],
+        ]);
+    }
 }
