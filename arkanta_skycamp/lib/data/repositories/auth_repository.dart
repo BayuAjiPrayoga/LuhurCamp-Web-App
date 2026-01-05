@@ -204,7 +204,27 @@ class AuthRepository {
     try {
       print('GOOGLE SIGN IN STARTED');
       // 1. Trigger Google Sign-In
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+        serverClientId: '120652636812-l2gqg4oh47uhc2n6adbfgk5nv4ojjkig.apps.googleusercontent.com',
+      );
+      
+      try {
+        await googleSignIn.disconnect(); // Force clear state
+      } catch (e) {
+        // Ignore if already disconnected
+      }
+
+      GoogleSignInAccount? googleUser;
+      try {
+        print('CALLING signIn()...');
+        googleUser = await googleSignIn.signIn();
+        print('signIn() COMPLETED');
+      } catch (signInError) {
+        print('SIGN IN ERROR: $signInError');
+        return AuthResult.error(message: 'Google Sign-In Error: $signInError');
+      }
+      
       if (googleUser == null) {
         print('GOOGLE USER NULL');
         return AuthResult.error(message: 'Login Google dibatalkan');
