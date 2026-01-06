@@ -18,6 +18,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'role' => $this->role,
+            'auth_provider' => $this->auth_provider,
+            'firebase_uid' => $this->firebase_uid,
             'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
             'created_at' => $this->created_at?->toISOString(),
         ];
