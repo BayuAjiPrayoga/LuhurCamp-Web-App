@@ -109,10 +109,13 @@ class AuthRepository {
     try {
       final response = await _apiClient.get(ApiConfig.user);
       if (response.statusCode == 200) {
-        return User.fromJson(response.data);
+        // Handle both { data: {...} } and direct user object response
+        final userData = response.data['data'] ?? response.data;
+        return User.fromJson(userData);
       }
       return null;
     } catch (e) {
+      _log('getUser error: $e');
       return null;
     }
   }

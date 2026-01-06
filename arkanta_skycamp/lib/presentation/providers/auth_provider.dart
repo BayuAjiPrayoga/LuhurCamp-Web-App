@@ -18,11 +18,7 @@ class AuthState {
     this.errorMessage,
   });
 
-  AuthState copyWith({
-    AuthStatus? status,
-    User? user,
-    String? errorMessage,
-  }) {
+  AuthState copyWith({AuthStatus? status, User? user, String? errorMessage}) {
     return AuthState(
       status: status ?? this.status,
       user: user ?? this.user,
@@ -41,27 +37,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> checkAuthStatus() async {
     state = state.copyWith(status: AuthStatus.loading);
-    
+
     final isLoggedIn = await _repository.isLoggedIn();
     if (isLoggedIn) {
       final user = await _repository.getUser();
       if (user != null) {
-        state = state.copyWith(
-          status: AuthStatus.authenticated,
-          user: user,
-        );
+        state = state.copyWith(status: AuthStatus.authenticated, user: user);
         return;
       }
     }
-    
+
     state = state.copyWith(status: AuthStatus.unauthenticated);
   }
 
   Future<bool> login(String email, String password) async {
     state = state.copyWith(status: AuthStatus.loading);
-    
+
     final result = await _repository.login(email, password);
-    
+
     if (result.isSuccess) {
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -69,7 +62,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       return true;
     }
-    
+
     state = state.copyWith(
       status: AuthStatus.error,
       errorMessage: result.message,
@@ -79,9 +72,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<bool> loginWithGoogle() async {
     state = state.copyWith(status: AuthStatus.loading);
-    
+
     final result = await _repository.loginWithGoogle();
-    
+
     if (result.isSuccess) {
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -89,7 +82,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       return true;
     }
-    
+
     state = state.copyWith(
       status: AuthStatus.error,
       errorMessage: result.message,
@@ -105,7 +98,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     String? phone,
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
-    
+
     final result = await _repository.register(
       name: name,
       email: email,
@@ -113,7 +106,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       passwordConfirmation: passwordConfirmation,
       phone: phone,
     );
-    
+
     if (result.isSuccess) {
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -121,7 +114,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       return true;
     }
-    
+
     state = state.copyWith(
       status: AuthStatus.error,
       errorMessage: result.message,
@@ -135,14 +128,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 
+  /// Refresh user data from backend
+  Future<void> refreshUser() async {
+    final user = await _repository.getUser();
+    if (user != null) {
+      state = state.copyWith(user: user);
+    }
+  }
+
   Future<UpdateProfileResult> updateProfile({
     required String name,
     String? phone,
   }) async {
-    final result = await _repository.updateProfile(
-      name: name,
-      phone: phone,
-    );
+    final result = await _repository.updateProfile(name: name, phone: phone);
 
     if (result.isSuccess && result.user != null) {
       state = state.copyWith(user: result.user);
@@ -177,8 +175,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void clearError() {
     state = state.copyWith(
-      status: state.user != null 
-          ? AuthStatus.authenticated 
+      status: state.user != null
+          ? AuthStatus.authenticated
           : AuthStatus.unauthenticated,
       errorMessage: null,
     );
