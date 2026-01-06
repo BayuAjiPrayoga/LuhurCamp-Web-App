@@ -269,6 +269,5 @@ class DatabaseSeeder extends Seeder
 
         $this->command->newLine();
         $this->command->info('🎉 Database seeding completed successfully!');
-        $this->command->info('📧 Admin Login: admin@luhurcamp.com / password123');
     }
 }

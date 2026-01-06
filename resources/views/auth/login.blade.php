@@ -26,7 +26,7 @@
             <div class="relative">
                 <input type="email" name="email"
                     class="input-modern w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:bg-white"
-                    placeholder="admin@luhurcamp.com" value="{{ old('email') }}" required>
+                    placeholder="Masukkan email Anda" value="{{ old('email') }}" required>
                 <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -77,15 +77,6 @@
             Masuk ke Dashboard
         </button>
     </form>
-
-    <!-- Demo Credentials -->
-    <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Demo Credentials</p>
-        <div class="space-y-1 text-sm">
-            <p class="text-slate-600"><span class="font-medium text-slate-700">Email:</span> admin@luhurcamp.com</p>
-            <p class="text-slate-600"><span class="font-medium text-slate-700">Password:</span> password123</p>
-        </div>
-    </div>
 
     <!-- Footer -->
     <p class="text-center text-slate-400 text-sm mt-6">
