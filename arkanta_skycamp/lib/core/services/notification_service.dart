@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import '../network/api_client.dart';
@@ -9,9 +8,7 @@ import '../router/app_router.dart';
 /// Background message handler - must be top-level function
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  if (kDebugMode) {
-    debugPrint('Handling background message: ${message.messageId}');
-  }
+  // Handle background message silently
 }
 
 class NotificationService {
@@ -28,8 +25,6 @@ class NotificationService {
 
   /// Initialize notification service
   Future<void> initialize() async {
-    if (kDebugMode) debugPrint('🔔 FCM: Starting initialization...');
-
     // Request permission
     await _requestPermission();
 
@@ -38,22 +33,13 @@ class NotificationService {
 
     // Get FCM token
     await _getFCMToken();
-    if (kDebugMode) {
-      debugPrint('🔔 FCM: Token obtained: ${_fcmToken?.substring(0, 30)}...');
-    }
 
     // Auto-sync FCM token to backend if user is logged in
-    final synced = await sendTokenToBackend(_fcmToken);
-    if (kDebugMode) {
-      debugPrint('🔔 FCM: Token sync result: $synced');
-    }
+    await sendTokenToBackend(_fcmToken);
 
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((token) async {
       _fcmToken = token;
-      if (kDebugMode) {
-        debugPrint('🔔 FCM Token refreshed: $token');
-      }
       await sendTokenToBackend(token);
     });
 
@@ -72,16 +58,12 @@ class NotificationService {
 
   /// Request notification permission
   Future<void> _requestPermission() async {
-    final settings = await _messaging.requestPermission(
+    await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
       provisional: false,
     );
-
-    if (kDebugMode) {
-      debugPrint('Notification permission: ${settings.authorizationStatus}');
-    }
   }
 
   /// Initialize local notifications for foreground display
@@ -103,10 +85,7 @@ class NotificationService {
     await _localNotifications.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (response) {
-        if (kDebugMode) {
-          debugPrint('Local notification tapped: ${response.payload}');
-        }
-        // Handle notification tap - navigate to specific screen
+        // Handle local notification tap if needed
       },
     );
 
@@ -131,20 +110,14 @@ class NotificationService {
   Future<String?> _getFCMToken() async {
     try {
       _fcmToken = await _messaging.getToken();
-      if (kDebugMode) debugPrint('FCM Token: $_fcmToken');
       return _fcmToken;
-    } catch (e) {
-      if (kDebugMode) debugPrint('Error getting FCM token: $e');
+    } catch (_) {
       return null;
     }
   }
 
   /// Handle foreground message - show local notification
   void _handleForegroundMessage(RemoteMessage message) {
-    if (kDebugMode) {
-      debugPrint('Foreground message received: ${message.notification?.title}');
-    }
-
     final notification = message.notification;
     if (notification != null) {
       _showLocalNotification(
@@ -157,20 +130,13 @@ class NotificationService {
 
   /// Handle notification tap
   void _handleNotificationTap(RemoteMessage message) {
-    if (kDebugMode) {
-      debugPrint('Notification tapped: ${message.data}');
-    }
-
-    // Navigate based on notification data
     final data = message.data;
     if (data.containsKey('booking_id')) {
       final bookingId = int.tryParse(data['booking_id'].toString());
       if (bookingId != null) {
-        // Navigate to booking detail using global navigator key
         rootNavigatorKey.currentContext?.go('/booking/$bookingId');
       }
     } else if (data.containsKey('type') && data['type'] == 'announcement') {
-      // Navigate to announcements
       rootNavigatorKey.currentContext?.go('/announcements');
     }
   }
@@ -213,47 +179,28 @@ class NotificationService {
   /// Subscribe to topic (e.g., 'announcements')
   Future<void> subscribeToTopic(String topic) async {
     await _messaging.subscribeToTopic(topic);
-    if (kDebugMode) debugPrint('Subscribed to topic: $topic');
   }
 
   /// Unsubscribe from topic
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
-    if (kDebugMode) debugPrint('Unsubscribed from topic: $topic');
   }
 
   /// Send FCM token to backend for push notification targeting
   Future<bool> sendTokenToBackend(String? token) async {
     if (token == null || token.isEmpty) {
-      if (kDebugMode) debugPrint('🔔 FCM: No token to send to backend');
       return false;
     }
 
     try {
-      // Only send if user is logged in (has auth token)
       final hasToken = await apiClient.hasToken();
-      if (kDebugMode) debugPrint('🔔 FCM: User has auth token: $hasToken');
-
       if (!hasToken) {
-        if (kDebugMode) {
-          debugPrint('🔔 FCM: User not logged in, skipping token sync');
-        }
         return false;
       }
 
-      if (kDebugMode) debugPrint('🔔 FCM: Sending token to backend...');
-      final response = await apiClient.put(
-        '/user/fcm-token',
-        data: {'fcm_token': token},
-      );
-      if (kDebugMode) {
-        debugPrint('🔔 FCM: Response status: ${response.statusCode}');
-        debugPrint('🔔 FCM: Response data: ${response.data}');
-        debugPrint('🔔 FCM: Token sent to backend successfully ✅');
-      }
+      await apiClient.put('/user/fcm-token', data: {'fcm_token': token});
       return true;
-    } catch (e) {
-      if (kDebugMode) debugPrint('🔔 FCM: Error sending token to backend: $e');
+    } catch (_) {
       return false;
     }
   }
@@ -262,9 +209,8 @@ class NotificationService {
   Future<void> removeTokenFromBackend() async {
     try {
       await apiClient.delete('/user/fcm-token');
-      if (kDebugMode) debugPrint('FCM: Token removed from backend');
-    } catch (e) {
-      if (kDebugMode) debugPrint('FCM: Error removing token: $e');
+    } catch (_) {
+      // Ignore errors on logout
     }
   }
 

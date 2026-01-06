@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../../core/network/api_client.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide User; // Avoid conflict with user_model
@@ -7,13 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/config/api_config.dart';
 import '../../core/services/notification_service.dart';
 import '../models/user_model.dart';
-
-// Debug logger - only prints in debug mode
-void _log(String message) {
-  if (kDebugMode) {
-    debugPrint(message);
-  }
-}
 
 class AuthRepository {
   final ApiClient _apiClient = apiClient;
@@ -26,8 +18,7 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        final responseData =
-            response.data['data']; // Access nested 'data' object
+        final responseData = response.data['data'];
         final token = responseData['token'];
         final user = User.fromJson(responseData['user']);
 
@@ -69,8 +60,7 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData =
-            response.data['data']; // Access nested 'data' object
+        final responseData = response.data['data'];
         final token = responseData['token'];
         final user = User.fromJson(responseData['user']);
 
@@ -114,8 +104,7 @@ class AuthRepository {
         return User.fromJson(userData);
       }
       return null;
-    } catch (e) {
-      _log('getUser error: $e');
+    } catch (_) {
       return null;
     }
   }
@@ -174,10 +163,7 @@ class AuthRepository {
       if (response.statusCode == 200) {
         final userData = response.data['data'] ?? response.data;
         final user = User.fromJson(userData);
-        return AuthResult.success(
-          user: user,
-          token: '',
-        ); // Token not needed here
+        return AuthResult.success(user: user, token: '');
       }
 
       return AuthResult.error(message: 'Update avatar failed');
@@ -206,7 +192,7 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200) {
-        return AuthResult.success(user: User.empty(), token: ''); // Dummy user
+        return AuthResult.success(user: User.empty(), token: '');
       }
 
       return AuthResult.error(message: 'Change password failed');
@@ -221,52 +207,30 @@ class AuthRepository {
 
   Future<AuthResult> loginWithGoogle() async {
     try {
-      _log('=== GOOGLE SIGN IN STARTED ===');
-
       // 1. Trigger Google Sign-In
-      // serverClientId adalah Web Client ID dari Firebase Console (OAuth 2.0 Client IDs)
-      // WAJIB untuk mendapatkan idToken dari Google Sign-In
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
         serverClientId:
             '120652636812-l2gqg4oh47uhc2n6adbfgk5nv4ojjkig.apps.googleusercontent.com',
       );
 
-      // Sign out terlebih dahulu untuk memastikan fresh sign-in
+      // Sign out first for fresh sign-in
       try {
         await googleSignIn.disconnect();
-      } catch (e) {
+      } catch (_) {
         // Ignore if already disconnected
       }
 
-      GoogleSignInAccount? googleUser;
-      try {
-        _log('[1] CALLING signIn()...');
-        googleUser = await googleSignIn.signIn();
-        _log('[1] signIn() COMPLETED');
-      } catch (signInError) {
-        _log('[1] SIGN IN ERROR: $signInError');
-        return AuthResult.error(message: 'Google Sign-In Error: $signInError');
-      }
-
+      final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
-        _log('[1] GOOGLE USER NULL - User cancelled');
         return AuthResult.error(message: 'Login Google dibatalkan');
       }
-      _log('[1] GOOGLE USER OBTAINED: ${googleUser.email}');
 
       // 2. Obtain OAuth Details
-      _log('[2] Getting authentication...');
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      _log('[2] GOOGLE AUTH OBTAINED:');
-      _log(
-        '    - AccessToken: ${googleAuth.accessToken != null ? "YES" : "NULL"}',
-      );
-      _log('    - IDToken: ${googleAuth.idToken != null ? "YES" : "NULL"}');
 
       if (googleAuth.idToken == null) {
-        _log('[2] ERROR: Google ID Token is null!');
         return AuthResult.error(
           message:
               'Gagal mendapatkan Google ID Token. Pastikan SHA-1 sudah dikonfigurasi di Firebase Console.',
@@ -274,39 +238,26 @@ class AuthRepository {
       }
 
       // 3. Create Credential for Firebase
-      _log('[3] Creating Firebase credential...');
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       // 4. Sign-in to Firebase
-      _log('[4] SIGNING IN TO FIREBASE...');
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);
-      _log('[4] FIREBASE SIGN IN SUCCESS: ${userCredential.user?.uid}');
-      _log('    - Email: ${userCredential.user?.email}');
-      _log('    - Display Name: ${userCredential.user?.displayName}');
 
-      _log('[5] Getting Firebase ID Token...');
+      // 5. Get Firebase ID Token
       final idToken = await userCredential.user?.getIdToken();
-
       if (idToken == null) {
-        _log('[5] ERROR: FIREBASE ID TOKEN IS NULL');
         return AuthResult.error(message: 'Gagal mendapatkan Firebase ID Token');
       }
-      _log('[5] FIREBASE ID TOKEN OBTAINED (length: ${idToken.length})');
 
       // 6. Send Token to Backend
-      _log('[6] POSTING TO BACKEND: /auth/firebase-login');
-      _log('    - Base URL: ${ApiConfig.baseUrl}');
-
       final response = await _apiClient.post(
         '/auth/firebase-login',
         data: {'token': idToken},
       );
-      _log('[6] BACKEND RESPONSE: ${response.statusCode}');
-      _log('[6] RESPONSE DATA: ${response.data}');
 
       if (response.statusCode == 200) {
         final responseData = response.data['data'];
@@ -314,7 +265,6 @@ class AuthRepository {
         final user = User.fromJson(responseData['user']);
 
         await _apiClient.saveToken(token);
-        _log('[7] TOKEN SAVED - Login Success!');
 
         // Send FCM token to backend for push notifications
         await notificationService.getTokenAndSync();
@@ -322,16 +272,10 @@ class AuthRepository {
         return AuthResult.success(user: user, token: token);
       }
 
-      _log('[6] ERROR: Unexpected response status');
       return AuthResult.error(
         message: response.data['message'] ?? 'Login Backend failed',
       );
     } on DioException catch (e) {
-      _log('=== DIO ERROR ===');
-      _log('Type: ${e.type}');
-      _log('Message: ${e.message}');
-      _log('Response: ${e.response?.data}');
-
       String errorMessage = 'Network error';
       if (e.response?.data != null && e.response?.data['message'] != null) {
         errorMessage = e.response!.data['message'];
@@ -340,17 +284,10 @@ class AuthRepository {
       } else if (e.type == DioExceptionType.connectionError) {
         errorMessage = 'Cannot connect to server';
       }
-
       return AuthResult.error(message: errorMessage);
     } on FirebaseAuthException catch (e) {
-      _log('=== FIREBASE AUTH ERROR ===');
-      _log('Code: ${e.code}');
-      _log('Message: ${e.message}');
       return AuthResult.error(message: 'Firebase Error: ${e.message}');
-    } catch (e, stackTrace) {
-      _log('=== GENERAL ERROR ===');
-      _log('Error: $e');
-      _log('StackTrace: $stackTrace');
+    } catch (e) {
       return AuthResult.error(message: e.toString());
     }
   }
