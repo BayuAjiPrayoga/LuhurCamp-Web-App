@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide User; // Avoid conflict with user_model
+import 'package:firebase_auth/firebase_auth.dart'
+    hide User; // Avoid conflict with user_model
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/config/api_config.dart';
 import '../models/user_model.dart';
@@ -12,22 +13,20 @@ class AuthRepository {
     try {
       final response = await _apiClient.post(
         ApiConfig.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
 
       if (response.statusCode == 200) {
-        final responseData = response.data['data']; // Access nested 'data' object
+        final responseData =
+            response.data['data']; // Access nested 'data' object
         final token = responseData['token'];
         final user = User.fromJson(responseData['user']);
-        
+
         await _apiClient.saveToken(token);
-        
+
         return AuthResult.success(user: user, token: token);
       }
-      
+
       return AuthResult.error(message: 'Login failed');
     } on DioException catch (e) {
       return AuthResult.error(
@@ -58,20 +57,21 @@ class AuthRepository {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData = response.data['data']; // Access nested 'data' object
+        final responseData =
+            response.data['data']; // Access nested 'data' object
         final token = responseData['token'];
         final user = User.fromJson(responseData['user']);
-        
+
         await _apiClient.saveToken(token);
-        
+
         return AuthResult.success(user: user, token: token);
       }
-      
+
       return AuthResult.error(message: 'Registration failed');
     } on DioException catch (e) {
       final errors = e.response?.data['errors'];
       String message = 'Registration failed';
-      
+
       if (errors != null && errors is Map) {
         final firstError = errors.values.first;
         if (firstError is List && firstError.isNotEmpty) {
@@ -79,13 +79,14 @@ class AuthRepository {
         }
       } else if (e.response?.data['message'] != null) {
         message = e.response!.data['message'];
-      } else if (e.type == DioExceptionType.connectionTimeout || 
-                 e.type == DioExceptionType.receiveTimeout) {
+      } else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
         message = 'Koneksi timeout. Periksa koneksi internet Anda.';
       } else if (e.type == DioExceptionType.connectionError) {
-        message = 'Tidak dapat terhubung ke server. Pastikan server berjalan di http://192.168.1.117:8000';
+        message =
+            'Tidak dapat terhubung ke server. Pastikan server berjalan di http://192.168.1.117:8000';
       }
-      
+
       return AuthResult.error(message: message);
     } catch (e) {
       return AuthResult.error(message: e.toString());
@@ -123,10 +124,7 @@ class AuthRepository {
     try {
       final response = await _apiClient.put(
         ApiConfig.updateProfile,
-        data: {
-          'name': name,
-          if (phone != null) 'phone': phone,
-        },
+        data: {'name': name, if (phone != null) 'phone': phone},
       );
 
       if (response.statusCode == 200) {
@@ -159,7 +157,10 @@ class AuthRepository {
       if (response.statusCode == 200) {
         final userData = response.data['data'] ?? response.data;
         final user = User.fromJson(userData);
-        return AuthResult.success(user: user, token: ''); // Token not needed here
+        return AuthResult.success(
+          user: user,
+          token: '',
+        ); // Token not needed here
       }
 
       return AuthResult.error(message: 'Update avatar failed');
@@ -200,68 +201,95 @@ class AuthRepository {
       return AuthResult.error(message: e.toString());
     }
   }
+
   Future<AuthResult> loginWithGoogle() async {
     try {
-      print('GOOGLE SIGN IN STARTED');
+      print('=== GOOGLE SIGN IN STARTED ===');
+
       // 1. Trigger Google Sign-In
+      // serverClientId adalah Web Client ID dari Firebase Console (OAuth 2.0 Client IDs)
+      // WAJIB untuk mendapatkan idToken dari Google Sign-In
       final googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
-        serverClientId: '120652636812-l2gqg4oh47uhc2n6adbfgk5nv4ojjkig.apps.googleusercontent.com',
+        serverClientId:
+            '120652636812-l2gqg4oh47uhc2n6adbfgk5nv4ojjkig.apps.googleusercontent.com',
       );
-      
+
+      // Sign out terlebih dahulu untuk memastikan fresh sign-in
       try {
-        await googleSignIn.disconnect(); // Force clear state
+        await googleSignIn.disconnect();
       } catch (e) {
         // Ignore if already disconnected
       }
 
       GoogleSignInAccount? googleUser;
       try {
-        print('CALLING signIn()...');
+        print('[1] CALLING signIn()...');
         googleUser = await googleSignIn.signIn();
-        print('signIn() COMPLETED');
+        print('[1] signIn() COMPLETED');
       } catch (signInError) {
-        print('SIGN IN ERROR: $signInError');
+        print('[1] SIGN IN ERROR: $signInError');
         return AuthResult.error(message: 'Google Sign-In Error: $signInError');
       }
-      
+
       if (googleUser == null) {
-        print('GOOGLE USER NULL');
+        print('[1] GOOGLE USER NULL - User cancelled');
         return AuthResult.error(message: 'Login Google dibatalkan');
       }
-      print('GOOGLE USER OBTAINED: ${googleUser.email}');
+      print('[1] GOOGLE USER OBTAINED: ${googleUser.email}');
 
       // 2. Obtain OAuth Details
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      print('GOOGLE AUTH OBTAINED: AccessToken=${googleAuth.accessToken != null}, IDToken=${googleAuth.idToken != null}');
+      print('[2] Getting authentication...');
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      print('[2] GOOGLE AUTH OBTAINED:');
+      print(
+        '    - AccessToken: ${googleAuth.accessToken != null ? "YES" : "NULL"}',
+      );
+      print('    - IDToken: ${googleAuth.idToken != null ? "YES" : "NULL"}');
+
+      if (googleAuth.idToken == null) {
+        print('[2] ERROR: Google ID Token is null!');
+        return AuthResult.error(
+          message:
+              'Gagal mendapatkan Google ID Token. Pastikan SHA-1 sudah dikonfigurasi di Firebase Console.',
+        );
+      }
 
       // 3. Create Credential for Firebase
+      print('[3] Creating Firebase credential...');
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       // 4. Sign-in to Firebase
-      print('SIGNING IN TO FIREBASE...');
-      final UserCredential userCredential = 
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      print('FIREBASE SIGN IN SUCCESS: ${userCredential.user?.uid}');
-      
+      print('[4] SIGNING IN TO FIREBASE...');
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+      print('[4] FIREBASE SIGN IN SUCCESS: ${userCredential.user?.uid}');
+      print('    - Email: ${userCredential.user?.email}');
+      print('    - Display Name: ${userCredential.user?.displayName}');
+
+      print('[5] Getting Firebase ID Token...');
       final idToken = await userCredential.user?.getIdToken();
 
       if (idToken == null) {
-        print('ERROR: FIREBASE ID TOKEN IS NULL');
+        print('[5] ERROR: FIREBASE ID TOKEN IS NULL');
         return AuthResult.error(message: 'Gagal mendapatkan Firebase ID Token');
       }
-      print('FIREBASE ID TOKEN OBTAINED');
+      print('[5] FIREBASE ID TOKEN OBTAINED (length: ${idToken.length})');
 
-      // 5. Send Token to Backend
-      print('POSTING TO BACKEND: /auth/firebase-login');
+      // 6. Send Token to Backend
+      print('[6] POSTING TO BACKEND: /auth/firebase-login');
+      print('    - Base URL: ${ApiConfig.baseUrl}');
+
       final response = await _apiClient.post(
         '/auth/firebase-login',
         data: {'token': idToken},
       );
-      print('BACKEND RESPONSE: ${response.statusCode}');
+      print('[6] BACKEND RESPONSE: ${response.statusCode}');
+      print('[6] RESPONSE DATA: ${response.data}');
 
       if (response.statusCode == 200) {
         final responseData = response.data['data'];
@@ -269,12 +297,40 @@ class AuthRepository {
         final user = User.fromJson(responseData['user']);
 
         await _apiClient.saveToken(token);
-        
+        print('[7] TOKEN SAVED - Login Success!');
+
         return AuthResult.success(user: user, token: token);
       }
 
-      return AuthResult.error(message: 'Login Backend failed');
-    } catch (e) {
+      print('[6] ERROR: Unexpected response status');
+      return AuthResult.error(
+        message: response.data['message'] ?? 'Login Backend failed',
+      );
+    } on DioException catch (e) {
+      print('=== DIO ERROR ===');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Response: ${e.response?.data}');
+
+      String errorMessage = 'Network error';
+      if (e.response?.data != null && e.response?.data['message'] != null) {
+        errorMessage = e.response!.data['message'];
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage = 'Connection timeout';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Cannot connect to server';
+      }
+
+      return AuthResult.error(message: errorMessage);
+    } on FirebaseAuthException catch (e) {
+      print('=== FIREBASE AUTH ERROR ===');
+      print('Code: ${e.code}');
+      print('Message: ${e.message}');
+      return AuthResult.error(message: 'Firebase Error: ${e.message}');
+    } catch (e, stackTrace) {
+      print('=== GENERAL ERROR ===');
+      print('Error: $e');
+      print('StackTrace: $stackTrace');
       return AuthResult.error(message: e.toString());
     }
   }
@@ -286,12 +342,7 @@ class AuthResult {
   final String? token;
   final String? message;
 
-  AuthResult._({
-    required this.isSuccess,
-    this.user,
-    this.token,
-    this.message,
-  });
+  AuthResult._({required this.isSuccess, this.user, this.token, this.message});
 
   factory AuthResult.success({required User user, required String token}) {
     return AuthResult._(isSuccess: true, user: user, token: token);
@@ -307,11 +358,7 @@ class UpdateProfileResult {
   final User? user;
   final String? message;
 
-  UpdateProfileResult._({
-    required this.isSuccess,
-    this.user,
-    this.message,
-  });
+  UpdateProfileResult._({required this.isSuccess, this.user, this.message});
 
   factory UpdateProfileResult.success({required User user}) {
     return UpdateProfileResult._(isSuccess: true, user: user);

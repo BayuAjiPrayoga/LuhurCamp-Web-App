@@ -28,11 +28,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _handleLogin() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final success = await ref.read(authProvider.notifier).login(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
-      
+      final success = await ref
+          .read(authProvider.notifier)
+          .login(_emailController.text.trim(), _passwordController.text);
+
       if (success && mounted) {
         context.go('/home');
       }
@@ -40,10 +39,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _handleGoogleLogin() async {
+    print('=== _handleGoogleLogin CALLED ===');
     final success = await ref.read(authProvider.notifier).loginWithGoogle();
-    
+    print('=== loginWithGoogle returned: $success ===');
+
     if (success && mounted) {
+      print('=== Navigating to /home ===');
+      // Gunakan pushReplacement untuk memastikan tidak bisa back ke login
       context.go('/home');
+    } else if (mounted) {
+      print('=== Login failed, staying on login screen ===');
     }
   }
 
@@ -73,7 +78,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              
+
               // Logo & Title
               Center(
                 child: Column(
@@ -94,10 +99,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 16),
                     Text(
                       'LuhurCamp',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -142,8 +148,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       prefixIcon: Icons.lock_outline,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword 
-                              ? Icons.visibility_off_outlined 
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
                           color: AppColors.textMuted,
                         ),
@@ -193,7 +199,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 alignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                   Text(
+                  Text(
                     'Belum punya akun? ',
                     style: TextStyle(color: AppColors.textSecondary),
                   ),

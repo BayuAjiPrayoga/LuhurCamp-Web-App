@@ -19,16 +19,30 @@ import '../../presentation/widgets/main_shell.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+// Notifier untuk refresh router
+class RouterRefreshNotifier extends ChangeNotifier {
+  RouterRefreshNotifier(Ref ref) {
+    ref.listen(authProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+}
+
+final routerRefreshProvider = Provider((ref) => RouterRefreshNotifier(ref));
+
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
+  final refreshNotifier = ref.watch(routerRefreshProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
       final isLoggedIn = authState.status == AuthStatus.authenticated;
-      final isLoggingIn = state.matchedLocation == '/login' || 
-                         state.matchedLocation == '/register';
+      final isLoggingIn =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
       final isSplash = state.matchedLocation == '/splash';
 
       if (isSplash) return null;
@@ -49,15 +63,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
       ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      
+
       // Main app with bottom navigation
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -93,7 +104,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: ':id',
                     pageBuilder: (context, state) {
-                      final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+                      final id =
+                          int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
                       return _buildPageWithAnimation(
                         KavlingDetailScreen(kavlingId: id),
                         state,
@@ -114,7 +126,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: ':id',
                     builder: (context, state) {
-                      final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+                      final id =
+                          int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
                       return BookingDetailScreen(bookingId: id);
                     },
                   ),
@@ -142,7 +155,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      
+
       // Standalone routes (full screen, no bottom nav)
       GoRoute(
         path: '/booking/new',
@@ -171,18 +184,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/announcement',
         parentNavigatorKey: _rootNavigatorKey,
-        pageBuilder: (context, state) => _buildPageWithAnimation(
-          const AnnouncementListScreen(),
-          state,
-        ),
+        pageBuilder: (context, state) =>
+            _buildPageWithAnimation(const AnnouncementListScreen(), state),
       ),
       GoRoute(
         path: '/peralatan',
         parentNavigatorKey: _rootNavigatorKey,
-        pageBuilder: (context, state) => _buildPageWithAnimation(
-          const PeralatanListScreen(),
-          state,
-        ),
+        pageBuilder: (context, state) =>
+            _buildPageWithAnimation(const PeralatanListScreen(), state),
       ),
     ],
   );
