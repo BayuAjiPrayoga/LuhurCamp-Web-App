@@ -237,9 +237,15 @@ class NotificationService {
       }
 
       if (kDebugMode) debugPrint('🔔 FCM: Sending token to backend...');
-      await apiClient.put('/user/fcm-token', data: {'fcm_token': token});
-      if (kDebugMode)
+      final response = await apiClient.put(
+        '/user/fcm-token',
+        data: {'fcm_token': token},
+      );
+      if (kDebugMode) {
+        debugPrint('🔔 FCM: Response status: ${response.statusCode}');
+        debugPrint('🔔 FCM: Response data: ${response.data}');
         debugPrint('🔔 FCM: Token sent to backend successfully ✅');
+      }
       return true;
     } catch (e) {
       if (kDebugMode) debugPrint('🔔 FCM: Error sending token to backend: $e');

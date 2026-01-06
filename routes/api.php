@@ -56,16 +56,21 @@ Route::prefix('v1')->group(function () {
     Route::get('/health', function () {
         try {
             \Illuminate\Support\Facades\DB::connection()->getPdo();
+            
+            // Check if fcm_token column exists
+            $hasFcmColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'fcm_token');
+            
             return response()->json([
                 'status' => 'ok',
                 'database' => 'connected',
-                'version' => 'debug-v2-' . now()->timestamp,
+                'fcm_column_exists' => $hasFcmColumn,
+                'version' => 'debug-v3-' . now()->timestamp,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'database' => $e->getMessage(),
-                'version' => 'debug-v2-' . now()->timestamp,
+                'version' => 'debug-v3-' . now()->timestamp,
             ], 500);
         }
     });
