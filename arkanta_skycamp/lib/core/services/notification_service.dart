@@ -38,17 +38,22 @@ class NotificationService {
 
     // Get FCM token
     await _getFCMToken();
-    if (kDebugMode)
+    if (kDebugMode) {
       debugPrint('🔔 FCM: Token obtained: ${_fcmToken?.substring(0, 30)}...');
+    }
 
     // Auto-sync FCM token to backend if user is logged in
     final synced = await sendTokenToBackend(_fcmToken);
-    if (kDebugMode) debugPrint('🔔 FCM: Token sync result: $synced');
+    if (kDebugMode) {
+      debugPrint('🔔 FCM: Token sync result: $synced');
+    }
 
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((token) async {
       _fcmToken = token;
-      if (kDebugMode) debugPrint('🔔 FCM Token refreshed: $token');
+      if (kDebugMode) {
+        debugPrint('🔔 FCM Token refreshed: $token');
+      }
       await sendTokenToBackend(token);
     });
 
