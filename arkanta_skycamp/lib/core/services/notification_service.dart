@@ -28,6 +28,8 @@ class NotificationService {
 
   /// Initialize notification service
   Future<void> initialize() async {
+    if (kDebugMode) debugPrint('🔔 FCM: Starting initialization...');
+
     // Request permission
     await _requestPermission();
 
@@ -36,14 +38,17 @@ class NotificationService {
 
     // Get FCM token
     await _getFCMToken();
+    if (kDebugMode)
+      debugPrint('🔔 FCM: Token obtained: ${_fcmToken?.substring(0, 30)}...');
 
     // Auto-sync FCM token to backend if user is logged in
-    await sendTokenToBackend(_fcmToken);
+    final synced = await sendTokenToBackend(_fcmToken);
+    if (kDebugMode) debugPrint('🔔 FCM: Token sync result: $synced');
 
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((token) async {
       _fcmToken = token;
-      if (kDebugMode) debugPrint('FCM Token refreshed: $token');
+      if (kDebugMode) debugPrint('🔔 FCM Token refreshed: $token');
       await sendTokenToBackend(token);
     });
 
@@ -215,25 +220,29 @@ class NotificationService {
   /// Send FCM token to backend for push notification targeting
   Future<bool> sendTokenToBackend(String? token) async {
     if (token == null || token.isEmpty) {
-      if (kDebugMode) debugPrint('FCM: No token to send to backend');
+      if (kDebugMode) debugPrint('🔔 FCM: No token to send to backend');
       return false;
     }
 
     try {
       // Only send if user is logged in (has auth token)
       final hasToken = await apiClient.hasToken();
+      if (kDebugMode) debugPrint('🔔 FCM: User has auth token: $hasToken');
+
       if (!hasToken) {
         if (kDebugMode) {
-          debugPrint('FCM: User not logged in, skipping token sync');
+          debugPrint('🔔 FCM: User not logged in, skipping token sync');
         }
         return false;
       }
 
+      if (kDebugMode) debugPrint('🔔 FCM: Sending token to backend...');
       await apiClient.put('/user/fcm-token', data: {'fcm_token': token});
-      if (kDebugMode) debugPrint('FCM: Token sent to backend successfully');
+      if (kDebugMode)
+        debugPrint('🔔 FCM: Token sent to backend successfully ✅');
       return true;
     } catch (e) {
-      if (kDebugMode) debugPrint('FCM: Error sending token to backend: $e');
+      if (kDebugMode) debugPrint('🔔 FCM: Error sending token to backend: $e');
       return false;
     }
   }
