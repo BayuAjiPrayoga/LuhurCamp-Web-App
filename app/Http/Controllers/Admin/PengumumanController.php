@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StorePengumumanRequest;
 use App\Http\Requests\Admin\UpdatePengumumanRequest;
 use App\Exports\PengumumanExport;
 use App\Models\Announcement;
+use App\Services\FCMService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -37,7 +38,21 @@ class PengumumanController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->has('is_active');
 
-        Announcement::create($data);
+        $announcement = Announcement::create($data);
+
+        // Send push notification to all users subscribed to 'announcements' topic
+        if ($announcement->is_active) {
+            $fcmService = new FCMService();
+            $fcmService->sendToTopic(
+                'announcements',
+                '📢 ' . $announcement->title,
+                \Illuminate\Support\Str::limit($announcement->content, 100),
+                [
+                    'type' => 'announcement',
+                    'announcement_id' => (string) $announcement->id,
+                ]
+            );
+        }
 
         return redirect()->route('admin.pengumuman.index')
             ->with('success', 'Pengumuman berhasil ditambahkan.');
