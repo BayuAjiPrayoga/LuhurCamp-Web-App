@@ -22,7 +22,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 // Notifier untuk refresh router
 class RouterRefreshNotifier extends ChangeNotifier {
   RouterRefreshNotifier(Ref ref) {
-    ref.listen(authProvider, (_, __) {
+    ref.listen(authProvider, (_, newState) {
       notifyListeners();
     });
   }

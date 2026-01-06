@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,16 +40,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _handleGoogleLogin() async {
-    print('=== _handleGoogleLogin CALLED ===');
+    if (kDebugMode) debugPrint('=== _handleGoogleLogin CALLED ===');
     final success = await ref.read(authProvider.notifier).loginWithGoogle();
-    print('=== loginWithGoogle returned: $success ===');
+    if (kDebugMode) debugPrint('=== loginWithGoogle returned: $success ===');
 
     if (success && mounted) {
-      print('=== Navigating to /home ===');
+      if (kDebugMode) debugPrint('=== Navigating to /home ===');
       // Gunakan pushReplacement untuk memastikan tidak bisa back ke login
       context.go('/home');
     } else if (mounted) {
-      print('=== Login failed, staying on login screen ===');
+      if (kDebugMode) {
+        debugPrint('=== Login failed, staying on login screen ===');
+      }
     }
   }
 

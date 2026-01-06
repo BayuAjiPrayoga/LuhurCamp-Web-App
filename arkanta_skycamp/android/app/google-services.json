@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "120652636812-b4kkh4740s7pe5l0sq7jvlfe8k1lsau5.apps.googleusercontent.com",
+          "client_id": "120652636812-pkjbhvj0ejp3p9fetk0ega5u87jbv1l4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.arkanta_skycamp",
-            "certificate_hash": "df1902c97c459c1615f1f00e050346d08041e95c"
+            "certificate_hash": "df1902c97c459c1615f1f00ed5d346d08d41e95c"
           }
         },
         {
