@@ -15,13 +15,28 @@ class FCMService
 
     public function __construct()
     {
+        // Try environment variable first (for Railway/production)
+        $credentialsJson = env('FIREBASE_CREDENTIALS');
+        
+        if ($credentialsJson) {
+            try {
+                $credentials = json_decode($credentialsJson, true);
+                $factory = (new Factory)->withServiceAccount($credentials);
+                $this->messaging = $factory->createMessaging();
+                return;
+            } catch (\Exception $e) {
+                Log::error('FCM: Failed to parse FIREBASE_CREDENTIALS env: ' . $e->getMessage());
+            }
+        }
+        
+        // Fallback to file (for local development)
         $credentialsPath = storage_path('app/firebase_credentials.json');
         
         if (file_exists($credentialsPath)) {
             $factory = (new Factory)->withServiceAccount($credentialsPath);
             $this->messaging = $factory->createMessaging();
         } else {
-            Log::warning('Firebase credentials file not found at: ' . $credentialsPath);
+            Log::warning('Firebase credentials not found (neither env nor file)');
         }
     }
 
