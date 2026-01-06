@@ -37,6 +37,9 @@ class NotificationService {
     // Get FCM token
     await _getFCMToken();
 
+    // Auto-sync FCM token to backend if user is logged in
+    await sendTokenToBackend(_fcmToken);
+
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((token) async {
       _fcmToken = token;
