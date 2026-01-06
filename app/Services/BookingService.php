@@ -11,9 +11,12 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BookingService
 {
+    protected FCMService $fcmService;
+
     public function __construct(
         protected BookingRepositoryInterface $bookingRepository
     ) {
+        $this->fcmService = new FCMService();
     }
 
     /**
@@ -93,6 +96,13 @@ class BookingService
             'qr_code' => $qrCodePath,
         ]);
 
+        // Send push notification to user
+        $this->sendBookingNotification(
+            $booking,
+            'Booking Dikonfirmasi! ✅',
+            "Pembayaran untuk {$booking->code} telah dikonfirmasi. QR Code Anda sudah siap!"
+        );
+
         return $booking->fresh();
     }
 
@@ -102,7 +112,16 @@ class BookingService
     public function rejectBooking(int $bookingId, string $reason): Booking
     {
         $this->bookingRepository->updateStatus($bookingId, 'rejected', $reason);
-        return $this->bookingRepository->findOrFail($bookingId);
+        $booking = $this->bookingRepository->findOrFail($bookingId);
+
+        // Send push notification to user
+        $this->sendBookingNotification(
+            $booking,
+            'Booking Ditolak ❌',
+            "Booking {$booking->code} ditolak. Alasan: {$reason}"
+        );
+
+        return $booking;
     }
 
     /**
@@ -111,7 +130,38 @@ class BookingService
     public function cancelBooking(int $bookingId): Booking
     {
         $this->bookingRepository->updateStatus($bookingId, 'cancelled');
-        return $this->bookingRepository->findOrFail($bookingId);
+        $booking = $this->bookingRepository->findOrFail($bookingId);
+
+        // Send push notification to user
+        $this->sendBookingNotification(
+            $booking,
+            'Booking Dibatalkan',
+            "Booking {$booking->code} telah dibatalkan."
+        );
+
+        return $booking;
+    }
+
+    /**
+     * Send push notification to booking user
+     */
+    protected function sendBookingNotification(Booking $booking, string $title, string $body): void
+    {
+        $booking->loadMissing('user');
+        
+        if ($booking->user && $booking->user->fcm_token) {
+            $this->fcmService->sendToDevice(
+                $booking->user->fcm_token,
+                $title,
+                $body,
+                [
+                    'type' => 'booking_update',
+                    'booking_id' => (string) $booking->id,
+                    'booking_code' => $booking->code,
+                    'status' => $booking->status,
+                ]
+            );
+        }
     }
 
     /**

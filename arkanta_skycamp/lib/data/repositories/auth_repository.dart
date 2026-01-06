@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart'
     hide User; // Avoid conflict with user_model
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/config/api_config.dart';
+import '../../core/services/notification_service.dart';
 import '../models/user_model.dart';
 
 // Debug logger - only prints in debug mode
@@ -31,6 +32,9 @@ class AuthRepository {
         final user = User.fromJson(responseData['user']);
 
         await _apiClient.saveToken(token);
+
+        // Send FCM token to backend for push notifications
+        await notificationService.getTokenAndSync();
 
         return AuthResult.success(user: user, token: token);
       }
@@ -115,6 +119,8 @@ class AuthRepository {
 
   Future<void> logout() async {
     try {
+      // Remove FCM token from backend before logging out
+      await notificationService.removeTokenFromBackend();
       await _apiClient.post(ApiConfig.logout);
     } finally {
       await _apiClient.clearToken();
@@ -306,6 +312,9 @@ class AuthRepository {
 
         await _apiClient.saveToken(token);
         _log('[7] TOKEN SAVED - Login Success!');
+
+        // Send FCM token to backend for push notifications
+        await notificationService.getTokenAndSync();
 
         return AuthResult.success(user: user, token: token);
       }

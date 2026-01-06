@@ -17,7 +17,8 @@ import '../../presentation/screens/announcement/announcement_list_screen.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/widgets/main_shell.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+/// Global navigator key for navigation from outside widget tree (e.g. notifications)
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 // Notifier untuk refresh router
 class RouterRefreshNotifier extends ChangeNotifier {
@@ -35,7 +36,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = ref.watch(routerRefreshProvider);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     refreshListenable: refreshNotifier,
     redirect: (context, state) {
@@ -159,7 +160,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Standalone routes (full screen, no bottom nav)
       GoRoute(
         path: '/booking/new',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
           final kavlingId = state.uri.queryParameters['kavling_id'];
           return _buildPageWithAnimation(
@@ -172,7 +173,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/booking/:id',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           return _buildPageWithAnimation(
@@ -183,13 +184,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/announcement',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) =>
             _buildPageWithAnimation(const AnnouncementListScreen(), state),
       ),
       GoRoute(
         path: '/peralatan',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) =>
             _buildPageWithAnimation(const PeralatanListScreen(), state),
       ),

@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'firebase_uid',
         'auth_provider',
+        'fcm_token',
     ];
 
     /**

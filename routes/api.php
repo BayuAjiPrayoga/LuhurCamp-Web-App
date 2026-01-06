@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\WeatherController;
+use App\Http\Controllers\Api\V1\FCMTokenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -75,6 +76,10 @@ Route::prefix('v1')->group(function () {
     // Protected Routes (Auth Required)
     // ========================
     Route::middleware('auth:sanctum')->group(function () {
+        // FCM Token
+        Route::put('/user/fcm-token', [FCMTokenController::class, 'update']);
+        Route::delete('/user/fcm-token', [FCMTokenController::class, 'destroy']);
+
         // Bookings
         Route::get('/bookings', [BookingController::class, 'index']);
         Route::post('/bookings', [BookingController::class, 'store']);
