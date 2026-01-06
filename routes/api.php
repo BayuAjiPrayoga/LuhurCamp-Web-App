@@ -113,6 +113,29 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
+    // Test FCM Topic Notification
+    Route::post('/test-fcm-topic', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'topic' => 'required|string',
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
+
+        $fcmService = new \App\Services\FCMService();
+        $result = $fcmService->sendToTopic(
+            $request->topic,
+            $request->title,
+            $request->body,
+            ['type' => 'test_topic', 'timestamp' => now()->toISOString()]
+        );
+
+        return response()->json([
+            'success' => $result,
+            'message' => $result ? 'Topic notification sent!' : 'Failed to send',
+            'topic' => $request->topic,
+        ]);
+    });
+
     Route::get('/galleries', [GalleryController::class, 'index']);
 
     // ========================
