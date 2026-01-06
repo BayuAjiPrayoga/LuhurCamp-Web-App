@@ -1,11 +1,8 @@
 <x-layouts.guest title="Login">
     <!-- Logo & Title -->
     <div class="text-center mb-8">
-        <div
-            class="inline-flex items-center justify-center w-16 h-16 gradient-primary rounded-2xl mb-4 shadow-lg shadow-green-900/30">
-            <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z" />
-            </svg>
+        <div class="inline-flex items-center justify-center w-20 h-20 mb-4">
+            <img src="{{ asset('images/logo-skycamp.svg') }}" alt="SkyCamp Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-2xl font-bold text-slate-900">Selamat Datang</h1>
         <p class="text-slate-500 mt-1">Masuk ke LuhurCamp Admin Panel</p>
