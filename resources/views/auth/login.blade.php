@@ -2,7 +2,7 @@
     <!-- Logo & Title -->
     <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-20 h-20 mb-4">
-            <img src="{{ asset('images/logo-skycamp.svg') }}" alt="SkyCamp Logo" class="w-full h-full object-contain">
+            <img src="{{ asset('images/logo-skycamp.png') }}" alt="SkyCamp Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-2xl font-bold text-slate-900">Selamat Datang</h1>
         <p class="text-slate-500 mt-1">Masuk ke LuhurCamp Admin Panel</p>
