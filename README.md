@@ -117,12 +117,12 @@ php artisan serve --host=0.0.0.0 --port=8000
 
 ### 2. Setup Mobile App (Flutter)
 
-> 📱 **Mobile App sekarang berada di repository terpisah:** [LuhurCamp-Mobile](https://github.com/BayuAjiPrayoga/LuhurCamp-Mobile)
+> 📱 **Mobile App sekarang berada di repository terpisah:** [SkyCamp_Mobile](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile)
 
 ```bash
 # Clone repository mobile
-git clone https://github.com/BayuAjiPrayoga/LuhurCamp-Mobile.git
-cd LuhurCamp-Mobile
+git clone https://github.com/BayuAjiPrayoga/SkyCamp_Mobile.git
+cd SkyCamp_Mobile
 
 # Install dependencies
 flutter pub get
@@ -138,10 +138,10 @@ flutter run
 
 ## 📂 Repository Terkait
 
-| Repository | Deskripsi |
-|:-----------|:----------|
-| [LuhurCamp](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile) | Backend Laravel + Web Admin Panel |
-| [LuhurCamp-Mobile](https://github.com/BayuAjiPrayoga/LuhurCamp-Mobile) | Aplikasi Mobile Flutter |
+| Repository                                                               | Deskripsi                         |
+| :----------------------------------------------------------------------- | :-------------------------------- |
+| [LuhurCamp-Web-App](https://github.com/BayuAjiPrayoga/LuhurCamp-Web-App) | Backend Laravel + Web Admin Panel |
+| [SkyCamp_Mobile](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile)       | Aplikasi Mobile Flutter           |
 
 ---
 
