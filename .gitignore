@@ -23,7 +23,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Exclude mobile projects
 
+# Exclude mobile projects
 /skycamp_mobile
 /skycamp
+/arkanta_skycamp
+*.rar
