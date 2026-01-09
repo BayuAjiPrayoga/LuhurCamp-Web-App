@@ -1,13 +1,15 @@
 #!/bin/sh
 set -e
 
-# Update Nginx port to match Railway provided PORT
-echo "Configuring Nginx to listen on port ${PORT:-80}..."
-sed -i "s/listen 8080;/listen ${PORT:-80};/g" /etc/nginx/sites-available/default
+# Update Nginx port - Use envsubst for reliable variable substitution
+echo "Configuring Nginx to listen on port ${PORT:-8080}..."
+envsubst '${PORT}' < /etc/nginx/sites-available/default > /etc/nginx/sites-available/default.tmp
+mv /etc/nginx/sites-available/default.tmp /etc/nginx/sites-available/default
 
 # DEBUG: Check DB Connection
 echo "--- DEBUG INFO ---"
 echo "DB_CONNECTION env var is: '${DB_CONNECTION}'"
+echo "PORT is: '${PORT}'"
 echo "Checking Laravel Config..."
 php artisan about | grep "Database" || true
 echo "------------------"
