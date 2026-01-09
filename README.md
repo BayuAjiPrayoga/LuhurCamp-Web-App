@@ -2,12 +2,14 @@
 
 ![LuhurCamp Logo](https://via.placeholder.com/150x150.png?text=LuhurCamp)
 
-**LuhurCamp** adalah sistem manajemen reservasi *camping ground* modern yang terdiri dari Aplikasi Mobile (untuk pelanggan) dan Panel Admin Web (untuk pengelola). Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan peralatan, dan operasional harian di lokasi camping.
+**LuhurCamp** adalah sistem manajemen reservasi _camping ground_ modern yang terdiri dari Aplikasi Mobile (untuk pelanggan) dan Panel Admin Web (untuk pengelola). Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan peralatan, dan operasional harian di lokasi camping.
 
 ---
 
 ## 📚 Dokumentasi Lengkap
+
 Dokumen teknis detail tersedia terpisah:
+
 -   **[SRS (Software Requirement Specification)](docs/SRS.md)**: Detail kebutuhan fungsional sistem.
 -   **[SDD (System Design Document)](docs/SDD.md)**: Arsitektur sistem, ERD, dan Topologi.
 -   **[Technical Specification](docs/Technical_Spec.md)**: Stack teknologi dan standar kode.
@@ -19,7 +21,8 @@ Dokumen teknis detail tersedia terpisah:
 ## 🌟 Fitur Utama
 
 ### 📱 Mobile App (Pelanggan)
--   **Booking Mudah**: Pilih tanggal check-in/out dan lihat ketersediaan kavling secara *real-time*.
+
+-   **Booking Mudah**: Pilih tanggal check-in/out dan lihat ketersediaan kavling secara _real-time_.
 -   **Sewa Peralatan**: Tambahkan tenda, matras, dan alat masak langsung ke dalam pesanan.
 -   **Manajemen Profil**: Ganti foto profil, update info data diri, dan ganti password.
 -   **Riwayat Pesanan**: Pantau status booking (Pending, Menunggu Konfirmasi, Confirmed, Selesai).
@@ -27,7 +30,30 @@ Dokumen teknis detail tersedia terpisah:
 -   **QR Code Ticket**: Dapatkan tiket masuk digital berupa QR Code setelah pembayaran diverifikasi.
 -   **Galeri & Info**: Lihat foto-foto lokasi dan informasi terbaru.
 
-### 💻 Web Admin (Pengelola)
+### � Screenshots Mobile App
+
+|                              Login                              |                              Register                              |
+| :-------------------------------------------------------------: | :----------------------------------------------------------------: |
+| ![Login](docs/img%20asset/Screenshot%202026-01-09%20221832.png) | ![Register](docs/img%20asset/Screenshot%202026-01-09%20221917.png) |
+
+|                              Home                              |                              Dashboard                              |
+| :------------------------------------------------------------: | :-----------------------------------------------------------------: |
+| ![Home](docs/img%20asset/Screenshot%202026-01-09%20221953.png) | ![Dashboard](docs/img%20asset/Screenshot%202026-01-09%20222043.png) |
+
+|                              Kavling List                              |                              Kavling Detail                              |
+| :--------------------------------------------------------------------: | :----------------------------------------------------------------------: |
+| ![Kavling List](docs/img%20asset/Screenshot%202026-01-09%20222112.png) | ![Kavling Detail](docs/img%20asset/Screenshot%202026-01-09%20222254.png) |
+
+|                              Booking Form                              |                              My Bookings                              |
+| :--------------------------------------------------------------------: | :-------------------------------------------------------------------: |
+| ![Booking Form](docs/img%20asset/Screenshot%202026-01-09%20222534.png) | ![My Bookings](docs/img%20asset/Screenshot%202026-01-09%20222558.png) |
+
+|                              Gallery                              |                              Pengumuman                              |
+| :---------------------------------------------------------------: | :------------------------------------------------------------------: |
+| ![Gallery](docs/img%20asset/Screenshot%202026-01-09%20222617.png) | ![Pengumuman](docs/img%20asset/Screenshot%202026-01-09%20222636.png) |
+
+### �💻 Web Admin (Pengelola)
+
 -   **Dashboard**: Ringkasan okupansi, pendapatan, dan booking terbaru.
 -   **Manajemen Master Data**: CRUD Kavling (foto, harga) dan Peralatan (stok).
 -   **Verifikasi Pembayaran**: Terima atau tolak bukti bayar pelanggan.
@@ -40,6 +66,7 @@ Dokumen teknis detail tersedia terpisah:
 ## 🛠️ Technology Stack
 
 ### Backend (API & Web Panel)
+
 -   **Framework**: [Laravel 10](https://laravel.com)
 -   **Language**: PHP 8.1+
 -   **Database**: MySQL 8.0
@@ -47,6 +74,7 @@ Dokumen teknis detail tersedia terpisah:
 -   **Auth**: Laravel Sanctum
 
 ### Frontend (Mobile App)
+
 -   **Framework**: [Flutter](https://flutter.dev) (Dart 3.x)
 -   **State Management**: Riverpod
 -   **Routing**: GoRouter
@@ -57,12 +85,14 @@ Dokumen teknis detail tersedia terpisah:
 ## 🚀 Cara Instalasi
 
 ### Prasyarat
+
 -   PHP >= 8.1, Composer
 -   Node.js & NPM
 -   Flutter SDK
 -   MySQL Server
 
 ### 1. Setup Backend (Laravel)
+
 ```bash
 # Clone repository
 git clone https://github.com/username/luhurcamp.git
@@ -86,6 +116,7 @@ php artisan serve --host=0.0.0.0 --port=8000
 ```
 
 ### 2. Setup Mobile App (Flutter)
+
 ```bash
 cd arkanta_skycamp
 
@@ -102,7 +133,9 @@ flutter run
 ---
 
 ## 👥 Kontributor
+
 -   **Tim Pengembang LuhurCamp**
 
 ---
+
 © 2025 LuhurCamp. All Rights Reserved.
