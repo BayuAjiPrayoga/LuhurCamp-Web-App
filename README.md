@@ -32,23 +32,23 @@ Dokumen teknis detail tersedia terpisah:
 
 ### � Screenshots Mobile App
 
-|                              Login                              |                              Register                              |
+|                              Login/Register                              |                              Dashboard                              |
 | :-------------------------------------------------------------: | :----------------------------------------------------------------: |
 | ![Login](docs/img%20asset/Screenshot%202026-01-09%20221832.png) | ![Register](docs/img%20asset/Screenshot%202026-01-09%20221917.png) |
 
-|                              Home                              |                              Dashboard                              |
+|                              Kavling                              |                              Peralatan                              |
 | :------------------------------------------------------------: | :-----------------------------------------------------------------: |
 | ![Home](docs/img%20asset/Screenshot%202026-01-09%20221953.png) | ![Dashboard](docs/img%20asset/Screenshot%202026-01-09%20222043.png) |
 
-|                              Kavling List                              |                              Kavling Detail                              |
+|                              Daftar Booking                              |                              Verifikasi                              |
 | :--------------------------------------------------------------------: | :----------------------------------------------------------------------: |
 | ![Kavling List](docs/img%20asset/Screenshot%202026-01-09%20222112.png) | ![Kavling Detail](docs/img%20asset/Screenshot%202026-01-09%20222254.png) |
 
-|                              Booking Form                              |                              My Bookings                              |
+|                              Galeri                              |                              Laporan                              |
 | :--------------------------------------------------------------------: | :-------------------------------------------------------------------: |
 | ![Booking Form](docs/img%20asset/Screenshot%202026-01-09%20222534.png) | ![My Bookings](docs/img%20asset/Screenshot%202026-01-09%20222558.png) |
 
-|                              Gallery                              |                              Pengumuman                              |
+|                              Profil                              |                              Pengumuman                              |
 | :---------------------------------------------------------------: | :------------------------------------------------------------------: |
 | ![Gallery](docs/img%20asset/Screenshot%202026-01-09%20222617.png) | ![Pengumuman](docs/img%20asset/Screenshot%202026-01-09%20222636.png) |
 
@@ -69,9 +69,9 @@ Dokumen teknis detail tersedia terpisah:
 
 -   **Framework**: [Laravel 10](https://laravel.com)
 -   **Language**: PHP 8.1+
--   **Database**: MySQL 8.0
+-   **Database**: Posgresql
 -   **Styling**: Tailwind CSS (via Vite)
--   **Auth**: Laravel Sanctum
+-   **Auth**: Laravel Sanctum Session Cookie
 
 ### Frontend (Mobile App)
 
