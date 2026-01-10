@@ -73,7 +73,7 @@ RUN chmod +x /usr/local/bin/run.sh \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Expose port
-EXPOSE 8080
+EXPOSE 9000
 
 # Start Supervisor
 ENTRYPOINT ["/usr/local/bin/run.sh"]
