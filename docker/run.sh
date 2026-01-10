@@ -2,9 +2,9 @@
 set -e
 
 # Update Nginx port to match Railway provided PORT
-PORT=${PORT:-9000}
+PORT=${PORT:-8080}
 echo "Configuring Nginx to listen on port ${PORT}..."
-sed -i "s/listen 9000;/listen ${PORT};/g" /etc/nginx/sites-available/default
+sed -i "s/listen 80;/listen ${PORT};/g" /etc/nginx/sites-available/default
 
 # Verify nginx config
 echo "Testing nginx configuration..."
