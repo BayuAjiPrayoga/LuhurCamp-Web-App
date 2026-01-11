@@ -45,7 +45,23 @@ class BookingController extends Controller
     }
 
     /**
-     * Display the specified booking
+     * Remove multiple bookings from storage.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|string',
+        ]);
+
+        $ids = explode(',', $request->ids);
+
+        Booking::whereIn('id', $ids)->delete();
+
+        return back()->with('success', count($ids) . ' Booking berhasil dihapus.');
+    }
+
+    /**
+     * Export filtered bookings to Excel
      */
     public function show($id)
     {

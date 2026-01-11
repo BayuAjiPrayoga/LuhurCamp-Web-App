@@ -57,6 +57,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/booking/scan', [BookingController::class, 'scanPage'])->name('booking.scan');
     Route::post('/booking/scan', [BookingController::class, 'scanCheckIn'])->name('booking.scan-check-in');
 
+    Route::delete('/booking/bulk-destroy', [BookingController::class, 'bulkDestroy'])->name('booking.bulk-destroy');
     Route::resource('booking', BookingController::class)->only(['index', 'show', 'destroy']);
     Route::post('/booking/{booking}/check-in', [BookingController::class, 'checkIn'])->name('booking.check-in');
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');

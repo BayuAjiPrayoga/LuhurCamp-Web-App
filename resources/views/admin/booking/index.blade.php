@@ -64,11 +64,32 @@
         <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Ditolak/Dibatalkan</span>
     </div>
 
+    <!-- Bulk Actions -->
+    <div id="bulk-actions" class="hidden mb-4 bg-red-50 p-3 rounded-lg flex items-center justify-between border border-red-100">
+        <div class="flex items-center gap-2 text-red-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span class="font-medium"><span id="selected-count">0</span> booking dipilih</span>
+        </div>
+        <form id="bulk-delete-form" action="{{ route('admin.booking.bulk-destroy') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus booking yang dipilih? Data tidak dapat dikembalikan.')">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="ids" id="bulk-delete-ids">
+            <button type="submit" class="text-sm bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 transition font-medium">
+                Hapus Semua
+            </button>
+        </form>
+    </div>
+
     <!-- Table -->
     <div class="table-container">
         <table class="data-table">
             <thead>
                 <tr>
+                    <th class="w-4">
+                        <input type="checkbox" id="select-all" class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50">
+                    </th>
                     <th>Kode</th>
                     <th>Customer</th>
                     <th>Tanggal Camp</th>
@@ -81,6 +102,9 @@
             <tbody>
                 @forelse($bookings ?? [] as $booking)
                     <tr>
+                        <td>
+                            <input type="checkbox" name="selected_bookings[]" value="{{ $booking->id }}" class="booking-checkbox rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50">
+                        </td>
                         <td class="font-mono font-medium">{{ $booking->code }}</td>
                         <td>
                             <div>
@@ -113,7 +137,6 @@
                             @endswitch
                         </td>
                         <td>
-                            </div>
                             <div class="flex items-center gap-2 mt-2 sm:mt-0">
                                 <a href="{{ route('admin.booking.show', $booking) }}" class="btn btn-ghost btn-sm" title="Lihat Detail">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +168,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-12">
+                        <td colspan="8" class="text-center py-12">
                             <div class="flex flex-col items-center">
                                 <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -158,6 +181,39 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAll = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.booking-checkbox');
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            const bulkDeleteIds = document.getElementById('bulk-delete-ids');
+
+            function updateBulkActions() {
+                const selected = Array.from(checkboxes).filter(cb => cb.checked);
+                if (selected.length > 0) {
+                    bulkActions.classList.remove('hidden');
+                    selectedCount.textContent = selected.length;
+                    bulkDeleteIds.value = selected.map(cb => cb.value).join(',');
+                } else {
+                    bulkActions.classList.add('hidden');
+                }
+            }
+
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                updateBulkActions();
+            });
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateBulkActions);
+            });
+        });
+    </script>
+    @endpush
     </div>
 
     <!-- Pagination -->
