@@ -35,6 +35,16 @@ class BookingController extends Controller
     }
 
     /**
+     * Remove the specified booking from storage.
+     */
+    public function destroy(Booking $booking)
+    {
+        $booking->delete();
+
+        return back()->with('success', 'Booking berhasil dihapus.');
+    }
+
+    /**
      * Display the specified booking
      */
     public function show($id)
