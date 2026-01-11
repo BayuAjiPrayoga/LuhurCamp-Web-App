@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Exports\BookingExport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BookingController extends Controller
@@ -104,13 +105,16 @@ class BookingController extends Controller
         return view('admin.booking.scan');
     }
 
-    public function scanCheckIn(Request $request)
+    /**
+     * Handle Scan Action (Check-In / Check-Out)
+     */
+    public function scanAction(Request $request)
     {
         $request->validate([
             'code' => 'required|string|exists:bookings,code',
         ]);
 
-        $booking = Booking::where('code', $request->code)->first();
+        $booking = Booking::with(['user', 'kavling', 'items.peralatan'])->where('code', $request->code)->first();
 
         if (!$booking) {
             return response()->json([
@@ -119,28 +123,98 @@ class BookingController extends Controller
             ], 404);
         }
 
-        if ($booking->status === 'checked_in') {
+        try {
+            DB::beginTransaction();
+
+            // Scenario 1: Check-In (Status: Confirmed/Paid => Checked In)
+            if (in_array($booking->status, ['confirmed', 'paid'])) {
+
+                // Update Inventory (Decrease)
+                $this->updateInventory($booking, false);
+
+                $booking->update([
+                    'status' => 'checked_in',
+                    'tanggal_check_in' => now(), // Record actual check-in time
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Check-in Berhasil! Stok peralatan telah dikurangi.',
+                    'action' => 'check_in',
+                    'booking' => $booking->load('user', 'kavling')
+                ]);
+            }
+
+            // Scenario 2: Check-Out (Status: Checked In => Completed)
+            elseif ($booking->status === 'checked_in') {
+
+                // Update Inventory (Increase/Restore)
+                $this->updateInventory($booking, true);
+
+                $booking->update([
+                    'status' => 'completed',
+                    'tanggal_check_out' => now(), // Record actual check-out time
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Check-out Berhasil! Stok peralatan telah dikembalikan.',
+                    'action' => 'check_out',
+                    'booking' => $booking->load('user', 'kavling')
+                ]);
+            }
+
+            // Scenario 3: Already Completed
+            elseif ($booking->status === 'completed') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Booking ini sudah selesai (Completed).',
+                    'booking' => $booking->load('user', 'kavling')
+                ], 400);
+            }
+
+            // Scenario 4: Other Status
+            else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Status booking tidak valid untuk scan: ' . ucfirst($booking->status),
+                    'booking' => $booking->load('user', 'kavling')
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Tamu ini SUDAH Check-in sebelumnya.',
-                'booking' => $booking->load('user', 'kavling')
-            ], 400);
+                'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage(),
+            ], 500);
         }
+    }
 
-        if (!in_array($booking->status, ['confirmed', 'paid'])) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Status booking tidak valid (' . ucfirst($booking->status) . ').',
-                'booking' => $booking->load('user', 'kavling')
-            ], 400);
+    /**
+     * Helper to update inventory stock
+     * @param Booking $booking
+     * @param bool $increment (true = add stock, false = reduce stock)
+     */
+    private function updateInventory(Booking $booking, bool $increment)
+    {
+        foreach ($booking->items as $item) {
+            $peralatan = $item->peralatan;
+            if ($peralatan) {
+                if ($increment) {
+                    $peralatan->increment('stok_tersedia', $item->jumlah);
+                } else {
+                    // Check if stock is sufficient before reducing
+                    if ($peralatan->stok_tersedia < $item->jumlah) {
+                        throw new \Exception("Stok {$peralatan->nama} tidak mencukupi! (Tersedia: {$peralatan->stok_tersedia}, Butuh: {$item->jumlah})");
+                    }
+                    $peralatan->decrement('stok_tersedia', $item->jumlah);
+                }
+            }
         }
-
-        $booking->update(['status' => 'checked_in']);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Check-in BERHASIL!',
-            'booking' => $booking->load('user', 'kavling')
-        ]);
     }
 }

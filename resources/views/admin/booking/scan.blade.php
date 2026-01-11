@@ -138,7 +138,7 @@
                 document.getElementById('loading-indicator').classList.remove('hidden');
 
                 // Send to Backend
-                fetch('{{ route('admin.booking.scan-check-in') }}', {
+                fetch('{{ route('admin.booking.scan-action') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -149,12 +149,12 @@
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('loading-indicator').classList.add('hidden');
-                        showResult(data.status === 'success', data.message, data.booking);
+                        showResult(data.status === 'success', data.message, data.booking, data.action);
                         playBeep(data.status === 'success');
                     })
                     .catch(error => {
                         document.getElementById('loading-indicator').classList.add('hidden');
-                        showResult(false, 'Terjadi kesalahan sistem.', null);
+                        showResult(false, 'Terjadi kesalahan sistem.', null, null);
                         playBeep(false);
                     });
             }
@@ -164,7 +164,7 @@
                 // console.warn(`Code scan error = ${error}`);
             }
 
-            function showResult(success, message, booking) {
+            function showResult(success, message, booking, action) {
                 const resultCard = document.getElementById('scan-result');
                 const iconSuccess = document.getElementById('result-icon-success');
                 const iconError = document.getElementById('result-icon-error');
@@ -173,16 +173,32 @@
 
                 resultCard.classList.remove('hidden');
 
+                // Reset classes
+                iconSuccess.className = 'hidden mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-2';
+                title.className = 'text-lg font-bold';
+
                 if (success) {
                     iconSuccess.classList.remove('hidden');
                     iconError.classList.add('hidden');
-                    title.innerText = 'Check-in Berhasil';
-                    title.className = 'text-lg font-bold text-green-700';
+
+                    if (action === 'check_out') {
+                        // Blue theme for Check-out
+                        iconSuccess.classList.add('bg-blue-100');
+                        iconSuccess.innerHTML = `<svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+                        title.classList.add('text-blue-700');
+                        title.innerText = 'Check-out Berhasil';
+                    } else {
+                        // Green theme for Check-in
+                        iconSuccess.classList.add('bg-green-100');
+                        iconSuccess.innerHTML = `<svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+                        title.classList.add('text-green-700');
+                        title.innerText = action === 'check_in' ? 'Check-in Berhasil' : 'Sukses';
+                    }
                 } else {
                     iconSuccess.classList.add('hidden');
                     iconError.classList.remove('hidden');
                     title.innerText = 'Gagal';
-                    title.className = 'text-lg font-bold text-red-700';
+                    title.classList.add('text-red-700');
                 }
 
                 msg.innerText = message;

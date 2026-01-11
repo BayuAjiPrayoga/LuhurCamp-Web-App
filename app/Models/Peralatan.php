@@ -16,6 +16,7 @@ class Peralatan extends Model
         'nama',
         'kategori',
         'stok_total',
+        'stok_tersedia',
         'harga_sewa',
         'deskripsi',
         'gambar',
