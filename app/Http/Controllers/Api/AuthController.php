@@ -236,4 +236,34 @@ class AuthController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Forgot Password
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $token = str()->random(60);
+
+        // Store token in password_reset_tokens table
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'email' => $request->email,
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]
+        );
+
+        // Log the token for testing purposes (Simulate Email)
+        \Illuminate\Support\Facades\Log::info("PASSWORD RESET - Email: {$request->email}, Token: {$token}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Link reset password telah dikirim ke email Anda (Cek Log Server untuk testing)',
+        ]);
+    }
 }
