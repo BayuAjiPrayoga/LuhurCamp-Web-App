@@ -326,15 +326,15 @@
                                 cameraId,
                                 {
                                     fps: 10,
-                                    qrbox: { width: 300, height: 300 },
-                                    // Remove aspectRatio to use native resolution
-                                    // This prevents excessive zoom
+                                    qrbox: { width: 220, height: 220 }, // Reduced to fit w-72 (288px)
+                                    aspectRatio: 1.0, // Force square aspect ratio matches container
                                     disableFlip: false,
                                 },
                                 onScanSuccess,
                                 onScanFailure
                             ).catch(err => {
                                 console.error("Error starting scanner", err);
+                                alert("Gagal memulai kamera: " + err);
                             });
                         }
                     }).catch(err => {
