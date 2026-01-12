@@ -83,10 +83,27 @@ class BookingController extends Controller
      */
     public function show(Request $request, Booking $booking)
     {
-        if ($booking->user_id !== $request->user()->id && $request->user()->role !== 'admin') {
+        // Cast to int to avoid strict comparison issues with string/int mismatch
+        $bookingUserId = (int) $booking->user_id;
+        $requestUserId = (int) $request->user()->id;
+
+        // Debug logging
+        \Log::info('Booking Detail Request', [
+            'booking_id' => $booking->id,
+            'booking_user_id' => $bookingUserId,
+            'request_user_id' => $requestUserId,
+            'request_user_email' => $request->user()->email,
+            'match' => $bookingUserId === $requestUserId,
+        ]);
+
+        if ($bookingUserId !== $requestUserId && $request->user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
+                'debug' => [
+                    'booking_user_id' => $bookingUserId,
+                    'your_user_id' => $requestUserId,
+                ],
             ], 403);
         }
 
@@ -103,7 +120,7 @@ class BookingController extends Controller
      */
     public function uploadPayment(UploadPaymentRequest $request, Booking $booking)
     {
-        if ($booking->user_id !== $request->user()->id) {
+        if ((int) $booking->user_id !== (int) $request->user()->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -134,7 +151,7 @@ class BookingController extends Controller
      */
     public function cancel(Request $request, Booking $booking)
     {
-        if ($booking->user_id !== $request->user()->id) {
+        if ((int) $booking->user_id !== (int) $request->user()->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
