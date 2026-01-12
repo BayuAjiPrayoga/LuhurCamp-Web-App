@@ -16,49 +16,38 @@
                 </x-ui.button>
             </div>
 
-            <x-ui.card
-                class="flex-1 flex flex-col justify-center bg-gray-900 border-0 overflow-hidden relative shadow-2xl">
-                <div class="absolute inset-0 z-0">
-                    <div id="reader" class="w-full h-full object-cover"></div>
-                </div>
-
-                <!-- Overlay UI -->
-                <div class="absolute inset-0 z-10 pointer-events-none flex flex-col items-center justify-center">
-                    <!-- Scanner Frame - NO backdrop-blur to avoid blocking QR detection -->
-                    <div
-                        class="relative w-64 h-64 md:w-72 md:h-72 border-2 border-white/40 rounded-2xl overflow-hidden">
-                        <!-- Corner Markers -->
-                        <div
-                            class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-xl">
-                        </div>
-                        <div
-                            class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-500 rounded-tr-xl">
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-500 rounded-bl-xl">
-                        </div>
-                        <div
-                            class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-500 rounded-br-xl">
-                        </div>
-
-                        <!-- Scanning Animation -->
-                        <div
-                            class="absolute inset-x-0 h-1 bg-primary-500/80 shadow-[0_0_10px_rgba(59,130,246,0.5)] animate-scan top-0">
+            <!-- Clean Scanner Card -->
+            <x-ui.card class="flex-1 flex flex-col items-center justify-center bg-white p-6">
+                <!-- Scanner Container - Compact with rounded corners -->
+                <div class="relative w-72 h-72 md:w-80 md:h-80 bg-gray-100 rounded-2xl overflow-hidden shadow-inner">
+                    <!-- Camera View -->
+                    <div id="reader" class="w-full h-full"></div>
+                    
+                    <!-- Corner Markers Overlay -->
+                    <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                        <div class="relative w-56 h-56 md:w-64 md:h-64">
+                            <!-- Corner Markers -->
+                            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-lg"></div>
+                            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-500 rounded-tr-lg"></div>
+                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-500 rounded-bl-lg"></div>
+                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-500 rounded-br-lg"></div>
+                            
+                            <!-- Scanning Animation Line -->
+                            <div class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0"></div>
                         </div>
                     </div>
-
-                    <p class="mt-8 text-white/90 font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur text-sm">
-                        Posisikan QR Code di dalam kotak
-                    </p>
                 </div>
-
+                
+                <!-- Instruction Text -->
+                <p class="mt-4 text-gray-600 font-medium text-sm text-center">
+                    Posisikan QR Code di dalam kotak
+                </p>
+                
                 <!-- Loading / Processing Status -->
                 <div id="loading-indicator"
-                    class="hidden absolute inset-0 z-20 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                    <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center">
-                        <div
-                            class="animate-spin rounded-full h-10 w-10 border-4 border-primary-100 border-t-primary-600 mb-4">
-                        </div>
+                    class="hidden absolute inset-0 z-20 bg-white/90 flex items-center justify-center rounded-2xl">
+                    <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center border">
+                        <div class="animate-spin rounded-full h-10 w-10 border-4 border-primary-100 border-t-primary-600 mb-4"></div>
                         <h3 class="text-gray-900 font-bold mb-1">Memproses...</h3>
                         <p class="text-gray-500 text-sm">Mohon tunggu sebentar</p>
                     </div>
