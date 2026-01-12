@@ -17,7 +17,6 @@
             </div>
 
             <!-- Clean Scanner Card -->
-            <!-- Clean Scanner Card -->
             <x-ui.card class="flex-1 flex flex-col items-center justify-center bg-white p-6">
                 <!-- Scanner Container - Fixed size which worked perfectly before -->
                 <div class="relative w-72 h-72 md:w-80 md:h-80 bg-gray-100 rounded-2xl overflow-hidden shadow-inner">
@@ -26,13 +25,15 @@
 
                     <!-- Scan Area Overlay -->
                     <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                        <!-- Green Scan Box (Full Border) -->
-                        <div
-                            class="relative w-56 h-56 md:w-64 md:h-64 border-2 border-primary-500 rounded-xl shadow-[0_0_0_9999px_rgba(0,0,0,0.1)]">
+                        <div class="relative w-56 h-56 md:w-64 md:h-64">
+                            <!-- Corner Markers -->
+                            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-lg"></div>
+                            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-500 rounded-tr-lg"></div>
+                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-500 rounded-bl-lg"></div>
+                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-500 rounded-br-lg"></div>
+                            
                             <!-- Scanning Animation Line -->
-                            <div
-                                class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0">
-                            </div>
+                            <div class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0"></div>
                         </div>
                     </div>
                 </div>
