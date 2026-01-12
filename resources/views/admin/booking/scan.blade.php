@@ -174,7 +174,7 @@
     @push('scripts')
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
-                      const html5QrCode = new Html5Qrcode("rea               der");
+            const html5QrCode = new Html5Qrcode("reader");
                     let isScanning = true;
                     let isProcessing = false;
                     let scanHistory = [];
