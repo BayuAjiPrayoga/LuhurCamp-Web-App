@@ -24,32 +24,25 @@ class KavlingController extends Controller
         // Remove hard filter, instead calculate availability
         $kavlings = $query->orderBy('nama')->get();
 
-        // Calculate availability for each kavling if dates specific
-        if ($request->check_in && $request->check_out) {
-            $kavlings->each(function ($kavling) use ($request) {
-                $checkIn = $request->check_in;
-                $checkOut = $request->check_out;
+        // Calculate availability
+        $kavlings->each(function ($kavling) use ($request) {
+            $checkIn = $request->check_in ?? now()->format('Y-m-d');
+            $checkOut = $request->check_out ?? now()->addDay()->format('Y-m-d');
 
-                $conflicting = $kavling->bookings()
-                    ->whereIn('status', ['pending', 'waiting_confirmation', 'confirmed', 'checked_in'])
-                    ->where(function ($q) use ($checkIn, $checkOut) {
-                        $q->whereBetween('tanggal_check_in', [$checkIn, $checkOut])
-                            ->orWhereBetween('tanggal_check_out', [$checkIn, $checkOut])
-                            ->orWhere(function ($overlapQ) use ($checkIn, $checkOut) {
-                                $overlapQ->where('tanggal_check_in', '<=', $checkIn)
-                                    ->where('tanggal_check_out', '>=', $checkOut);
-                            });
-                    })
-                    ->exists();
+            $conflicting = $kavling->bookings()
+                ->whereIn('status', ['pending', 'waiting_confirmation', 'confirmed', 'checked_in'])
+                ->where(function ($q) use ($checkIn, $checkOut) {
+                    $q->whereBetween('tanggal_check_in', [$checkIn, $checkOut])
+                        ->orWhereBetween('tanggal_check_out', [$checkIn, $checkOut])
+                        ->orWhere(function ($overlapQ) use ($checkIn, $checkOut) {
+                            $overlapQ->where('tanggal_check_in', '<=', $checkIn)
+                                ->where('tanggal_check_out', '>=', $checkOut);
+                        });
+                })
+                ->exists();
 
-                $kavling->setAttribute('is_available', !$conflicting);
-            });
-        } else {
-            // Default availability is true if no dates checked
-            $kavlings->each(function ($kavling) {
-                $kavling->setAttribute('is_available', true);
-            });
-        }
+            $kavling->setAttribute('is_available', !$conflicting);
+        });
 
         return response()->json([
             'success' => true,
@@ -62,23 +55,23 @@ class KavlingController extends Controller
      */
     public function show(Request $request, Kavling $kavling)
     {
-        // Check availability for specific dates if provided
-        $isAvailable = true;
-        if ($request->check_in && $request->check_out) {
-            $conflicting = $kavling->bookings()
-                ->whereIn('status', ['pending', 'waiting_confirmation', 'confirmed', 'checked_in'])
-                ->where(function ($q) use ($request) {
-                    $q->whereBetween('tanggal_check_in', [$request->check_in, $request->check_out])
-                        ->orWhereBetween('tanggal_check_out', [$request->check_in, $request->check_out])
-                        ->orWhere(function ($q) use ($request) {
-                            $q->where('tanggal_check_in', '<=', $request->check_in)
-                                ->where('tanggal_check_out', '>=', $request->check_out);
-                        });
-                })
-                ->exists();
+        // Check availability
+        $checkIn = $request->check_in ?? now()->format('Y-m-d');
+        $checkOut = $request->check_out ?? now()->addDay()->format('Y-m-d');
 
-            $isAvailable = !$conflicting;
-        }
+        $conflicting = $kavling->bookings()
+            ->whereIn('status', ['pending', 'waiting_confirmation', 'confirmed', 'checked_in'])
+            ->where(function ($q) use ($checkIn, $checkOut) {
+                $q->whereBetween('tanggal_check_in', [$checkIn, $checkOut])
+                    ->orWhereBetween('tanggal_check_out', [$checkIn, $checkOut])
+                    ->orWhere(function ($q) use ($checkIn, $checkOut) {
+                        $q->where('tanggal_check_in', '<=', $checkIn)
+                            ->where('tanggal_check_out', '>=', $checkOut);
+                    });
+            })
+            ->exists();
+
+        $isAvailable = !$conflicting;
 
         return response()->json([
             'success' => true,
