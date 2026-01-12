@@ -95,7 +95,7 @@ class LaporanController extends Controller
             }
 
             $bookings = Booking::whereBetween('created_at', [$current, $chunkEnd])
-                ->where('status', 'confirmed')
+                ->whereIn('status', ['confirmed', 'checked_in', 'completed'])
                 ->get();
 
             $weeks[] = [
