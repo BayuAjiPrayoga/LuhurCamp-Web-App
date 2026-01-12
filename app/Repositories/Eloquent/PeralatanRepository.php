@@ -61,8 +61,17 @@ class PeralatanRepository extends BaseRepository implements PeralatanRepositoryI
      */
     public function getAvailableStock(): int
     {
-        return (int) $this->query()
+        $totalStock = (int) $this->query()
             ->where('kondisi', 'baik')
             ->sum('stok_total');
+
+        // Calculate rented stock (active bookings today)
+        $rentedStock = \App\Models\BookingItem::whereHas('booking', function ($query) {
+            $query->whereNotIn('status', ['cancelled', 'rejected', 'completed'])
+                ->whereDate('tanggal_check_in', '<=', now())
+                ->whereDate('tanggal_check_out', '>=', now());
+        })->sum('jumlah');
+
+        return max(0, $totalStock - $rentedStock);
     }
 }
