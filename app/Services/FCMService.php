@@ -17,21 +17,36 @@ class FCMService
     {
         // Try environment variable first (for Railway/production)
         $credentialsJson = env('FIREBASE_CREDENTIALS');
-        
+
         if ($credentialsJson) {
+            // Check if it's a file path
+            if (str_starts_with($credentialsJson, 'storage/') || str_starts_with($credentialsJson, '/') || str_ends_with($credentialsJson, '.json')) {
+                // If it looks like a path but isn't absolute, assume relative to base path
+                $path = str_starts_with($credentialsJson, '/') ? $credentialsJson : base_path($credentialsJson);
+
+                if (file_exists($path)) {
+                    $factory = (new Factory)->withServiceAccount($path);
+                    $this->messaging = $factory->createMessaging();
+                    return;
+                }
+            }
+
+            // Try parsing as JSON
             try {
                 $credentials = json_decode($credentialsJson, true);
-                $factory = (new Factory)->withServiceAccount($credentials);
-                $this->messaging = $factory->createMessaging();
-                return;
+                if (is_array($credentials)) {
+                    $factory = (new Factory)->withServiceAccount($credentials);
+                    $this->messaging = $factory->createMessaging();
+                    return;
+                }
             } catch (\Exception $e) {
                 Log::error('FCM: Failed to parse FIREBASE_CREDENTIALS env: ' . $e->getMessage());
             }
         }
-        
+
         // Fallback to file (for local development)
         $credentialsPath = storage_path('app/firebase_credentials.json');
-        
+
         if (file_exists($credentialsPath)) {
             $factory = (new Factory)->withServiceAccount($credentialsPath);
             $this->messaging = $factory->createMessaging();
@@ -60,12 +75,12 @@ class FCMService
                 ->withApnsConfig($this->getApnsConfig());
 
             $this->messaging->send($message);
-            
+
             Log::info("FCM: Notification sent to device", [
                 'title' => $title,
                 'token' => substr($fcmToken, 0, 20) . '...'
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             Log::error('FCM: Failed to send notification', [
@@ -86,7 +101,7 @@ class FCMService
         }
 
         $validTokens = array_filter($fcmTokens, fn($token) => !empty($token));
-        
+
         if (empty($validTokens)) {
             return ['success' => 0, 'failure' => 0];
         }
@@ -99,12 +114,12 @@ class FCMService
                 ->withApnsConfig($this->getApnsConfig());
 
             $report = $this->messaging->sendMulticast($message, $validTokens);
-            
+
             Log::info("FCM: Multicast sent", [
                 'success' => $report->successes()->count(),
                 'failure' => $report->failures()->count()
             ]);
-            
+
             return [
                 'success' => $report->successes()->count(),
                 'failure' => $report->failures()->count()
@@ -134,12 +149,12 @@ class FCMService
                 ->withApnsConfig($this->getApnsConfig());
 
             $this->messaging->send($message);
-            
+
             Log::info("FCM: Notification sent to topic", [
                 'topic' => $topic,
                 'title' => $title
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             Log::error('FCM: Failed to send to topic', [

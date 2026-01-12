@@ -78,8 +78,8 @@
                         <!-- Payment Proof Image -->
                         <div class="lg:w-64 flex-shrink-0">
                             <div class="bg-gray-100 rounded-lg aspect-[3/4] flex items-center justify-center relative group cursor-pointer"
-                                onclick="openImageModal('{{ Storage::url($booking->bukti_pembayaran) }}')">
-                                <img src="{{ Storage::url($booking->bukti_pembayaran) }}"
+                                onclick="openImageModal('{{ Storage::disk('public')->url($booking->bukti_pembayaran) }}')">
+                                <img src="{{ Storage::disk('public')->url($booking->bukti_pembayaran) }}"
                                     class="w-full h-full object-cover rounded-lg" alt="Bukti Transfer">
                                 <div
                                     class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition rounded-lg flex items-center justify-center">
