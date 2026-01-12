@@ -19,14 +19,14 @@
             <x-ui.card
                 class="flex-1 flex flex-col justify-center bg-gray-900 border-0 overflow-hidden relative shadow-2xl">
                 <div class="absolute inset-0 z-0">
-                    <div id="reader" class="w-full h-full object-cover opacity-80"></div>
+                    <div id="reader" class="w-full h-full object-cover"></div>
                 </div>
 
                 <!-- Overlay UI -->
                 <div class="absolute inset-0 z-10 pointer-events-none flex flex-col items-center justify-center">
-                    <!-- Scanner Frame -->
+                    <!-- Scanner Frame - NO backdrop-blur to avoid blocking QR detection -->
                     <div
-                        class="relative w-64 h-64 md:w-80 md:h-80 border-2 border-white/30 rounded-3xl overflow-hidden backdrop-blur-sm">
+                        class="relative w-64 h-64 md:w-72 md:h-72 border-2 border-white/40 rounded-2xl overflow-hidden">
                         <!-- Corner Markers -->
                         <div
                             class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-xl">
