@@ -243,21 +243,21 @@
                 const item = document.createElement('div');
                 item.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition border border-gray-100';
                 item.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    ${success
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        ${success
                         ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
                         : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'}
-                                </svg>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
+                                    <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
-                                <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
-                            </div>
-                        </div>
-                        <span class="text-xs text-gray-400">${time}</span>
-                    `;
+                            <span class="text-xs text-gray-400">${time}</span>
+                        `;
 
                 historyContainer.prepend(item);
             }
@@ -320,10 +320,26 @@
 
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
-                    const cameraId = devices[0].id;
+                    // Prefer back/rear camera for better quality
+                    let cameraId = devices[0].id;
+                    for (let device of devices) {
+                        if (device.label.toLowerCase().includes('back') ||
+                            device.label.toLowerCase().includes('rear') ||
+                            device.label.toLowerCase().includes('environment')) {
+                            cameraId = device.id;
+                            break;
+                        }
+                    }
+
                     html5QrCode.start(
                         cameraId,
-                        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+                        {
+                            fps: 10,
+                            qrbox: { width: 300, height: 300 },
+                            // Remove aspectRatio to use native resolution
+                            // This prevents excessive zoom
+                            disableFlip: false,
+                        },
                         onScanSuccess,
                         onScanFailure
                     ).catch(err => {
