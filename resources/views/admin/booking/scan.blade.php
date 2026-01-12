@@ -17,38 +17,21 @@
             </div>
 
             <!-- Clean Scanner Card -->
+            <!-- Clean Scanner Card -->
             <x-ui.card class="flex-1 flex flex-col items-center justify-center bg-white p-6">
-                <!-- Scanner Container - 4:3 Aspect Ratio for proper camera view -->
-                <div
-                    class="relative w-full max-w-sm aspect-[3/4] md:aspect-[4/3] bg-black rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+                <!-- Scanner Container - Fixed size which worked perfectly before -->
+                <div class="relative w-72 h-72 md:w-80 md:h-80 bg-gray-100 rounded-2xl overflow-hidden shadow-inner">
                     <!-- Camera View -->
-                    <div id="reader" class="w-full h-full object-cover"></div>
+                    <div id="reader" class="w-full h-full"></div>
 
                     <!-- Scan Area Overlay -->
                     <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                        <!-- Darkened Background outside scan area -->
-                        <div class="absolute inset-0 bg-black/10"></div>
-
-                        <!-- Green Scan Box -->
+                        <!-- Green Scan Box (Full Border) -->
                         <div
-                            class="relative w-64 h-64 border-2 border-primary-500 rounded-xl bg-transparent shadow-[0_0_0_9999px_rgba(0,0,0,0.2)]">
-                            <!-- Corner Accents for emphasis -->
-                            <div
-                                class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-primary-400 -mt-1 -ml-1 rounded-tl-lg">
-                            </div>
-                            <div
-                                class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-primary-400 -mt-1 -mr-1 rounded-tr-lg">
-                            </div>
-                            <div
-                                class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-primary-400 -mb-1 -ml-1 rounded-bl-lg">
-                            </div>
-                            <div
-                                class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-primary-400 -mb-1 -mr-1 rounded-br-lg">
-                            </div>
-
+                            class="relative w-56 h-56 md:w-64 md:h-64 border-2 border-primary-500 rounded-xl shadow-[0_0_0_9999px_rgba(0,0,0,0.1)]">
                             <!-- Scanning Animation Line -->
                             <div
-                                class="absolute inset-x-2 h-0.5 bg-primary-400 shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-scan top-0">
+                                class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0">
                             </div>
                         </div>
                     </div>
@@ -190,172 +173,172 @@
     @push('scripts')
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
-                const html5QrCode = new Html5Qrcode("rea               der");
-                let isScanning = true;
-                let isProcessing = false;
-                let scanHistory = [];
+                      const html5QrCode = new Html5Qrcode("rea               der");
+                    let isScanning = true;
+                    let isProcessing = false;
+                    let scanHistory = [];
 
-                // Audio Context for Beep
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                function playBeep(success = true) {
-                    if (audioCtx.state === 'suspended') audioCtx.resume();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(success ? 880 : 300, audioCtx.currentTime);
-                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    oscillator.start();
-                    setTimeout(() => oscillator.stop(), success ? 200 : 500);
-                }
-
-                function onScanSuccess(decodedText, decodedResult) {
-                    if (!isScanning || isProcessing) return;
-
-                    isProcessing = true;
-                    html5QrCode.pause();
-                    document.getElementById('loading-indicator').classList.remove('hidden');
-
-                    fetch('{{ route('admin.booking.scan-action') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ code: decodedText })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('loading-indicator').classList.add('hidden');
-                            const success = data.status === 'success';
-                            handleScanResult(success, data);
-                            playBeep(success);
-                        })
-                        .catch(error => {
-                            document.getElementById('loading-indicator').classList.add('hidden');
-                            handleScanResult(false, { message: 'Terjadi kesalahan sistem.', action: 'error' });
-                            playBeep(false);
-                        });
-                }
-
-                function addToHistory(data, success) {
-                    const historyContainer = document.getElementById('scan-history');
-                    const emptyMsg = historyContainer.querySelector('.empty-msg');
-                    if (emptyMsg) emptyMsg.remove();
-
-                    const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    const statusColor = success ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
-
-                    const item = document.createElement('div');
-                    item.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition border border-gray-100';
-                    item.innerHTML = `
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            ${success
-                            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
-                            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'}
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
-                                        <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs text-gray-400">${time}</span>
-                            `;
-
-                    historyContainer.prepend(item);
-                }
-
-                function handleScanResult(success, data) {
-                    const idleState = document.getElementById('idle-state');
-                    const resultCard = document.getElementById('scan-result');
-                    const resultIconContainer = document.getElementById('result-icon-container');
-                    const title = document.getElementById('result-title');
-                    const msg = document.getElementById('result-message');
-                    const bookingDetails = document.getElementById('booking-details');
-
-                    idleState.classList.add('hidden');
-                    resultCard.classList.remove('hidden');
-
-                    // Icon & Color Logic
-                    if (success) {
-                        if (data.action === 'check_out') {
-                            resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-3 text-blue-600';
-                            resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>`;
-                            title.innerText = 'Check-out Berhasil';
-                            title.className = 'text-xl font-bold text-blue-700';
-                        } else {
-                            resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-3 text-green-600';
-                            resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
-                            title.innerText = 'Check-in Berhasil';
-                            title.className = 'text-xl font-bold text-green-700';
-                        }
-                        bookingDetails.classList.remove('hidden');
-                    } else {
-                        resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-3 text-red-600';
-                        resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
-                        title.innerText = 'Gagal Memproses';
-                        title.className = 'text-xl font-bold text-red-700';
-                        bookingDetails.classList.add('hidden');
+                    // Audio Context for Beep
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    function playBeep(success = true) {
+                        if (audioCtx.state === 'suspended') audioCtx.resume();
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(success ? 880 : 300, audioCtx.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                        oscillator.start();
+                        setTimeout(() => oscillator.stop(), success ? 200 : 500);
                     }
 
-                    msg.innerText = data.message;
+                    function onScanSuccess(decodedText, decodedResult) {
+                        if (!isScanning || isProcessing) return;
 
-                    if (data.booking) {
-                        document.getElementById('guest-name').innerText = data.booking.user ? data.booking.user.name : '-';
-                        document.getElementById('kavling-name').innerText = data.booking.kavling ? data.booking.kavling.nama : '-';
-                        document.getElementById('booking-code').innerText = data.booking.code;
-                    }
+                        isProcessing = true;
+                        html5QrCode.pause();
+                        document.getElementById('loading-indicator').classList.remove('hidden');
 
-                    addToHistory(data, success);
-                }
-
-                function resumeScanning() {
-                    document.getElementById('scan-result').classList.add('hidden');
-                    document.getElementById('idle-state').classList.remove('hidden');
-                    isScanning = true;
-                    isProcessing = false;
-                    html5QrCode.resume();
-                }
-
-                function onScanFailure(error) {
-                    // Ignore frequent errors
-                }
-
-                Html5Qrcode.getCameras().then(devices => {
-                    if (devices && devices.length) {
-                        // Prefer back/rear camera for better quality
-                        let cameraId = devices[0].id;
-                        for (let device of devices) {
-                            if (device.label.toLowerCase().includes('back') ||
-                                device.label.toLowerCase().includes('rear') ||
-                                device.label.toLowerCase().includes('environment')) {
-                                cameraId = device.id;
-                                break;
-                            }
-                        }
-
-                        html5QrCode.start(
-                            cameraId,
-                            {
-                                fps: 10,
-                                qrbox: { width: 300, height: 300 },
-                                // Remove aspectRatio to use native resolution
-                                // This prevents excessive zoom
-                                disableFlip: false,
+                        fetch('{{ route('admin.booking.scan-action') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
-                            onScanSuccess,
-                            onScanFailure
-                        ).catch(err => {
-                            console.error("Error starting scanner", err);
-                        });
+                            body: JSON.stringify({ code: decodedText })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                document.getElementById('loading-indicator').classList.add('hidden');
+                                const success = data.status === 'success';
+                                handleScanResult(success, data);
+                                playBeep(success);
+                            })
+                            .catch(error => {
+                                document.getElementById('loading-indicator').classList.add('hidden');
+                                handleScanResult(false, { message: 'Terjadi kesalahan sistem.', action: 'error' });
+                                playBeep(false);
+                            });
                     }
-                }).catch(err => {
-                    console.error("Error getting cameras", err);
-                });
-            </script>
+
+                    function addToHistory(data, success) {
+                        const historyContainer = document.getElementById('scan-history');
+                        const emptyMsg = historyContainer.querySelector('.empty-msg');
+                        if (emptyMsg) emptyMsg.remove();
+
+                        const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                        const statusColor = success ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition border border-gray-100';
+                        item.innerHTML = `
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                ${success
+                                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
+                                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'}
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
+                                            <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-400">${time}</span>
+                                `;
+
+                        historyContainer.prepend(item);
+                    }
+
+                    function handleScanResult(success, data) {
+                        const idleState = document.getElementById('idle-state');
+                        const resultCard = document.getElementById('scan-result');
+                        const resultIconContainer = document.getElementById('result-icon-container');
+                        const title = document.getElementById('result-title');
+                        const msg = document.getElementById('result-message');
+                        const bookingDetails = document.getElementById('booking-details');
+
+                        idleState.classList.add('hidden');
+                        resultCard.classList.remove('hidden');
+
+                        // Icon & Color Logic
+                        if (success) {
+                            if (data.action === 'check_out') {
+                                resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-3 text-blue-600';
+                                resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>`;
+                                title.innerText = 'Check-out Berhasil';
+                                title.className = 'text-xl font-bold text-blue-700';
+                            } else {
+                                resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-3 text-green-600';
+                                resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+                                title.innerText = 'Check-in Berhasil';
+                                title.className = 'text-xl font-bold text-green-700';
+                            }
+                            bookingDetails.classList.remove('hidden');
+                        } else {
+                            resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-3 text-red-600';
+                            resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+                            title.innerText = 'Gagal Memproses';
+                            title.className = 'text-xl font-bold text-red-700';
+                            bookingDetails.classList.add('hidden');
+                        }
+
+                        msg.innerText = data.message;
+
+                        if (data.booking) {
+                            document.getElementById('guest-name').innerText = data.booking.user ? data.booking.user.name : '-';
+                            document.getElementById('kavling-name').innerText = data.booking.kavling ? data.booking.kavling.nama : '-';
+                            document.getElementById('booking-code').innerText = data.booking.code;
+                        }
+
+                        addToHistory(data, success);
+                    }
+
+                    function resumeScanning() {
+                        document.getElementById('scan-result').classList.add('hidden');
+                        document.getElementById('idle-state').classList.remove('hidden');
+                        isScanning = true;
+                        isProcessing = false;
+                        html5QrCode.resume();
+                    }
+
+                    function onScanFailure(error) {
+                        // Ignore frequent errors
+                    }
+
+                    Html5Qrcode.getCameras().then(devices => {
+                        if (devices && devices.length) {
+                            // Prefer back/rear camera for better quality
+                            let cameraId = devices[0].id;
+                            for (let device of devices) {
+                                if (device.label.toLowerCase().includes('back') ||
+                                    device.label.toLowerCase().includes('rear') ||
+                                    device.label.toLowerCase().includes('environment')) {
+                                    cameraId = device.id;
+                                    break;
+                                }
+                            }
+
+                            html5QrCode.start(
+                                cameraId,
+                                {
+                                    fps: 10,
+                                    qrbox: { width: 300, height: 300 },
+                                    // Remove aspectRatio to use native resolution
+                                    // This prevents excessive zoom
+                                    disableFlip: false,
+                                },
+                                onScanSuccess,
+                                onScanFailure
+                            ).catch(err => {
+                                console.error("Error starting scanner", err);
+                            });
+                        }
+                    }).catch(err => {
+                        console.error("Error getting cameras", err);
+                    });
+                </script>
     @endpush
 </x-layouts.admin>
