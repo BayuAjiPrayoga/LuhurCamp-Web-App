@@ -82,7 +82,7 @@ class BookingRepository extends BaseRepository implements BookingRepositoryInter
         return (float) $this->query()
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'checked_in', 'completed'])
             ->sum('total_harga');
     }
 
