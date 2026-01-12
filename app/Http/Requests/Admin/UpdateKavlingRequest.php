@@ -27,7 +27,7 @@ class UpdateKavlingRequest extends FormRequest
             'harga_per_malam' => ['required', 'numeric', 'min:0'],
             'fasilitas' => ['nullable', 'array'],
             'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'status' => ['required', Rule::in(['aktif', 'nonaktif'])],
+            'status' => ['required', Rule::in(['aktif', 'nonaktif', 'penuh', 'maintenance'])],
         ];
     }
 
