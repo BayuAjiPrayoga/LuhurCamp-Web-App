@@ -173,8 +173,8 @@ class FCMService
         return AndroidConfig::fromArray([
             'priority' => 'high',
             'notification' => [
-                'channel_id' => 'luhurcamp_channel',
-                'sound' => 'default',
+                'channel_id' => 'luhurcamp_alert_channel', // Updated to match Flutter custom channel
+                'sound' => 'luhur_alert', // Must not have extension for Android
             ],
         ]);
     }
@@ -190,7 +190,7 @@ class FCMService
             ],
             'payload' => [
                 'aps' => [
-                    'sound' => 'default',
+                    'sound' => 'luhur_alert.aiff', // Or .wav, must exist in iOS bundle
                     'badge' => 1,
                 ],
             ],
