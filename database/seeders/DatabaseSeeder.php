@@ -86,16 +86,16 @@ class DatabaseSeeder extends Seeder
         // ========================
 
         $peralatan = [
-            ['nama' => 'Tenda Dome 4P', 'kategori' => 'tenda', 'stok_total' => 15, 'harga_sewa' => 75000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda kapasitas 4 orang, waterproof, mudah dipasang'],
-            ['nama' => 'Tenda Dome 2P', 'kategori' => 'tenda', 'stok_total' => 10, 'harga_sewa' => 50000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda kapasitas 2 orang, ringan dan compact'],
-            ['nama' => 'Tenda Camping 6P', 'kategori' => 'tenda', 'stok_total' => 5, 'harga_sewa' => 120000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda besar untuk keluarga, 2 ruangan'],
-            ['nama' => 'Kompor Portable', 'kategori' => 'masak', 'stok_total' => 10, 'harga_sewa' => 25000, 'kondisi' => 'baik', 'deskripsi' => 'Kompor gas portable dengan regulator, aman digunakan'],
-            ['nama' => 'Nesting Set', 'kategori' => 'masak', 'stok_total' => 8, 'harga_sewa' => 20000, 'kondisi' => 'baik', 'deskripsi' => 'Set alat masak camping 4-5 pcs, anti lengket'],
-            ['nama' => 'Sleeping Bag', 'kategori' => 'tidur', 'stok_total' => 20, 'harga_sewa' => 30000, 'kondisi' => 'baik', 'deskripsi' => 'Sleeping bag nyaman untuk suhu 10-20°C'],
-            ['nama' => 'Matras', 'kategori' => 'tidur', 'stok_total' => 20, 'harga_sewa' => 15000, 'kondisi' => 'baik', 'deskripsi' => 'Matras foam anti lembab, tebal 5cm'],
-            ['nama' => 'Lampu Tenda', 'kategori' => 'lainnya', 'stok_total' => 15, 'harga_sewa' => 10000, 'kondisi' => 'baik', 'deskripsi' => 'Lampu LED rechargeable, terang hingga 12 jam'],
-            ['nama' => 'Kursi Lipat', 'kategori' => 'lainnya', 'stok_total' => 12, 'harga_sewa' => 15000, 'kondisi' => 'perlu_perbaikan', 'deskripsi' => 'Kursi camping lipat portable, beban max 100kg'],
-            ['nama' => 'Meja Lipat', 'kategori' => 'lainnya', 'stok_total' => 8, 'harga_sewa' => 20000, 'kondisi' => 'baik', 'deskripsi' => 'Meja camping lipat aluminium, ringan dan kuat'],
+            ['nama' => 'Tenda Dome 4P', 'kategori' => 'tenda', 'stok_total' => 15, 'stok_tersedia' => 15, 'harga_sewa' => 75000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda kapasitas 4 orang, waterproof, mudah dipasang'],
+            ['nama' => 'Tenda Dome 2P', 'kategori' => 'tenda', 'stok_total' => 10, 'stok_tersedia' => 10, 'harga_sewa' => 50000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda kapasitas 2 orang, ringan dan compact'],
+            ['nama' => 'Tenda Camping 6P', 'kategori' => 'tenda', 'stok_total' => 5, 'stok_tersedia' => 5, 'harga_sewa' => 120000, 'kondisi' => 'baik', 'deskripsi' => 'Tenda besar untuk keluarga, 2 ruangan'],
+            ['nama' => 'Kompor Portable', 'kategori' => 'masak', 'stok_total' => 10, 'stok_tersedia' => 10, 'harga_sewa' => 25000, 'kondisi' => 'baik', 'deskripsi' => 'Kompor gas portable dengan regulator, aman digunakan'],
+            ['nama' => 'Nesting Set', 'kategori' => 'masak', 'stok_total' => 8, 'stok_tersedia' => 8, 'harga_sewa' => 20000, 'kondisi' => 'baik', 'deskripsi' => 'Set alat masak camping 4-5 pcs, anti lengket'],
+            ['nama' => 'Sleeping Bag', 'kategori' => 'tidur', 'stok_total' => 20, 'stok_tersedia' => 20, 'harga_sewa' => 30000, 'kondisi' => 'baik', 'deskripsi' => 'Sleeping bag nyaman untuk suhu 10-20°C'],
+            ['nama' => 'Matras', 'kategori' => 'tidur', 'stok_total' => 20, 'stok_tersedia' => 20, 'harga_sewa' => 15000, 'kondisi' => 'baik', 'deskripsi' => 'Matras foam anti lembab, tebal 5cm'],
+            ['nama' => 'Lampu Tenda', 'kategori' => 'lainnya', 'stok_total' => 15, 'stok_tersedia' => 15, 'harga_sewa' => 10000, 'kondisi' => 'baik', 'deskripsi' => 'Lampu LED rechargeable, terang hingga 12 jam'],
+            ['nama' => 'Kursi Lipat', 'kategori' => 'lainnya', 'stok_total' => 12, 'stok_tersedia' => 12, 'harga_sewa' => 15000, 'kondisi' => 'perlu_perbaikan', 'deskripsi' => 'Kursi camping lipat portable, beban max 100kg'],
+            ['nama' => 'Meja Lipat', 'kategori' => 'lainnya', 'stok_total' => 8, 'stok_tersedia' => 8, 'harga_sewa' => 20000, 'kondisi' => 'baik', 'deskripsi' => 'Meja camping lipat aluminium, ringan dan kuat'],
         ];
 
         $peralatanModels = [];
