@@ -57,7 +57,10 @@ Dokumen teknis detail tersedia terpisah:
 -   **Dashboard**: Ringkasan okupansi, pendapatan, dan booking terbaru.
 -   **Manajemen Master Data**: CRUD Kavling (foto, harga) dan Peralatan (stok).
 -   **Verifikasi Pembayaran**: Terima atau tolak bukti bayar pelanggan.
--   **Check-in System**: Scan QR Code tamu yang datang menggunakan webcam/scanner.
+-   **Smart Scanner System**:
+    -   Scan QR Code tamu untuk Check-in & Check-out.
+    -   Optimized Camera View (Larger Scan Area).
+    -   Support Re-scanning flow.
 -   **Laporan**: Cetak laporan pendapatan dan tingkat hunian (PDF).
 -   **Manajemen Galeri**: Moderasi foto yang diupload pengguna.
 
