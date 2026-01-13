@@ -27,13 +27,23 @@
                     <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
                         <div class="relative w-56 h-56 md:w-64 md:h-64">
                             <!-- Corner Markers -->
-                            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-lg"></div>
-                            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-500 rounded-tr-lg"></div>
-                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-500 rounded-bl-lg"></div>
-                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-500 rounded-br-lg"></div>
-                            
+                            <div
+                                class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-500 rounded-tl-lg">
+                            </div>
+                            <div
+                                class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-500 rounded-tr-lg">
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-500 rounded-bl-lg">
+                            </div>
+                            <div
+                                class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-500 rounded-br-lg">
+                            </div>
+
                             <!-- Scanning Animation Line -->
-                            <div class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0"></div>
+                            <div
+                                class="absolute inset-x-2 h-0.5 bg-primary-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-scan top-0">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,171 +185,172 @@
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
             const html5QrCode = new Html5Qrcode("reader");
-                    let isScanning = true;
-                    let isProcessing = false;
-                    let scanHistory = [];
+            let isScanning = true;
+            let isProcessing = false;
+            let scanHistory = [];
 
-                    // Audio Context for Beep
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    function playBeep(success = true) {
-                        if (audioCtx.state === 'suspended') audioCtx.resume();
-                        const oscillator = audioCtx.createOscillator();
-                        const gainNode = audioCtx.createGain();
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioCtx.destination);
-                        oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(success ? 880 : 300, audioCtx.currentTime);
-                        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                        oscillator.start();
-                        setTimeout(() => oscillator.stop(), success ? 200 : 500);
-                    }
+            // Audio Context for Beep
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            function playBeep(success = true) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(success ? 880 : 300, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), success ? 200 : 500);
+            }
 
-                    function onScanSuccess(decodedText, decodedResult) {
-                        if (!isScanning || isProcessing) return;
+            function onScanSuccess(decodedText, decodedResult) {
+                if (!isScanning || isProcessing) return;
 
-                        isProcessing = true;
-                        html5QrCode.pause();
-                        document.getElementById('loading-indicator').classList.remove('hidden');
+                isProcessing = true;
+                html5QrCode.pause();
+                document.getElementById('loading-indicator').classList.remove('hidden');
 
-                        fetch('{{ route('admin.booking.scan-action') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ code: decodedText })
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById('loading-indicator').classList.add('hidden');
-                                const success = data.status === 'success';
-                                handleScanResult(success, data);
-                                playBeep(success);
-                            })
-                            .catch(error => {
-                                document.getElementById('loading-indicator').classList.add('hidden');
-                                handleScanResult(false, { message: 'Terjadi kesalahan sistem.', action: 'error' });
-                                playBeep(false);
-                            });
-                    }
-
-                    function addToHistory(data, success) {
-                        const historyContainer = document.getElementById('scan-history');
-                        const emptyMsg = historyContainer.querySelector('.empty-msg');
-                        if (emptyMsg) emptyMsg.remove();
-
-                        const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                        const statusColor = success ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
-
-                        const item = document.createElement('div');
-                        item.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition border border-gray-100';
-                        item.innerHTML = `
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                ${success
-                                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
-                                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'}
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
-                                            <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs text-gray-400">${time}</span>
-                                `;
-
-                        historyContainer.prepend(item);
-                    }
-
-                    function handleScanResult(success, data) {
-                        const idleState = document.getElementById('idle-state');
-                        const resultCard = document.getElementById('scan-result');
-                        const resultIconContainer = document.getElementById('result-icon-container');
-                        const title = document.getElementById('result-title');
-                        const msg = document.getElementById('result-message');
-                        const bookingDetails = document.getElementById('booking-details');
-
-                        idleState.classList.add('hidden');
-                        resultCard.classList.remove('hidden');
-
-                        // Icon & Color Logic
-                        if (success) {
-                            if (data.action === 'check_out') {
-                                resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-3 text-blue-600';
-                                resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>`;
-                                title.innerText = 'Check-out Berhasil';
-                                title.className = 'text-xl font-bold text-blue-700';
-                            } else {
-                                resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-3 text-green-600';
-                                resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
-                                title.innerText = 'Check-in Berhasil';
-                                title.className = 'text-xl font-bold text-green-700';
-                            }
-                            bookingDetails.classList.remove('hidden');
-                        } else {
-                            resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-3 text-red-600';
-                            resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
-                            title.innerText = 'Gagal Memproses';
-                            title.className = 'text-xl font-bold text-red-700';
-                            bookingDetails.classList.add('hidden');
-                        }
-
-                        msg.innerText = data.message;
-
-                        if (data.booking) {
-                            document.getElementById('guest-name').innerText = data.booking.user ? data.booking.user.name : '-';
-                            document.getElementById('kavling-name').innerText = data.booking.kavling ? data.booking.kavling.nama : '-';
-                            document.getElementById('booking-code').innerText = data.booking.code;
-                        }
-
-                        addToHistory(data, success);
-                    }
-
-                    function resumeScanning() {
-                        document.getElementById('scan-result').classList.add('hidden');
-                        document.getElementById('idle-state').classList.remove('hidden');
-                        isScanning = true;
-                        isProcessing = false;
-                        html5QrCode.resume();
-                    }
-
-                    function onScanFailure(error) {
-                        // Ignore frequent errors
-                    }
-
-                    Html5Qrcode.getCameras().then(devices => {
-                        if (devices && devices.length) {
-                            // Prefer back/rear camera for better quality
-                            let cameraId = devices[0].id;
-                            for (let device of devices) {
-                                if (device.label.toLowerCase().includes('back') ||
-                                    device.label.toLowerCase().includes('rear') ||
-                                    device.label.toLowerCase().includes('environment')) {
-                                    cameraId = device.id;
-                                    break;
-                                }
-                            }
-
-                            html5QrCode.start(
-                                cameraId,
-                                {
-                                    fps: 10,
-                                    qrbox: { width: 220, height: 220 }, // Reduced to fit w-72 (288px)
-                                    aspectRatio: 1.0, // Force square aspect ratio matches container
-                                    disableFlip: false,
-                                },
-                                onScanSuccess,
-                                onScanFailure
-                            ).catch(err => {
-                                console.error("Error starting scanner", err);
-                                alert("Gagal memulai kamera: " + err);
-                            });
-                        }
-                    }).catch(err => {
-                        console.error("Error getting cameras", err);
+                fetch('{{ route('admin.booking.scan-action') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ code: decodedText })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('loading-indicator').classList.add('hidden');
+                        const success = data.status === 'success';
+                        handleScanResult(success, data);
+                        playBeep(success);
+                    })
+                    .catch(error => {
+                        document.getElementById('loading-indicator').classList.add('hidden');
+                        handleScanResult(false, { message: 'Terjadi kesalahan sistem.', action: 'error' });
+                        playBeep(false);
                     });
-                </script>
+            }
+
+            function addToHistory(data, success) {
+                const historyContainer = document.getElementById('scan-history');
+                const emptyMsg = historyContainer.querySelector('.empty-msg');
+                if (emptyMsg) emptyMsg.remove();
+
+                const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const statusColor = success ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition border border-gray-100';
+                item.innerHTML = `
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center ${statusColor}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    ${success
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'}
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">${data.booking ? data.booking.user.name : 'Unknown'}</p>
+                                                <p class="text-xs text-gray-500">${data.booking ? data.booking.code : '-'}</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-gray-400">${time}</span>
+                                    `;
+
+                historyContainer.prepend(item);
+            }
+
+            function handleScanResult(success, data) {
+                const idleState = document.getElementById('idle-state');
+                const resultCard = document.getElementById('scan-result');
+                const resultIconContainer = document.getElementById('result-icon-container');
+                const title = document.getElementById('result-title');
+                const msg = document.getElementById('result-message');
+                const bookingDetails = document.getElementById('booking-details');
+
+                idleState.classList.add('hidden');
+                resultCard.classList.remove('hidden');
+
+                // Icon & Color Logic
+                if (success) {
+                    if (data.action === 'check_out') {
+                        resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-3 text-blue-600';
+                        resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>`;
+                        title.innerText = 'Check-out Berhasil';
+                        title.className = 'text-xl font-bold text-blue-700';
+                    } else {
+                        resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-3 text-green-600';
+                        resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+                        title.innerText = 'Check-in Berhasil';
+                        title.className = 'text-xl font-bold text-green-700';
+                    }
+                    bookingDetails.classList.remove('hidden');
+                } else {
+                    resultIconContainer.className = 'mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-3 text-red-600';
+                    resultIconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+                    title.innerText = 'Gagal Memproses';
+                    title.className = 'text-xl font-bold text-red-700';
+                    bookingDetails.classList.add('hidden');
+                }
+
+                msg.innerText = data.message;
+
+                if (data.booking) {
+                    document.getElementById('guest-name').innerText = data.booking.user ? data.booking.user.name : '-';
+                    document.getElementById('kavling-name').innerText = data.booking.kavling ? data.booking.kavling.nama : '-';
+                    document.getElementById('booking-code').innerText = data.booking.code;
+                }
+
+                addToHistory(data, success);
+            }
+
+            function resumeScanning() {
+                document.getElementById('scan-result').classList.add('hidden');
+                document.getElementById('idle-state').classList.remove('hidden');
+                isScanning = true;
+                isProcessing = false;
+                html5QrCode.resume();
+            }
+
+            function onScanFailure(error) {
+                // Ignore frequent errors
+            }
+
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    // Prefer back/rear camera for better quality
+                    let cameraId = devices[0].id;
+                    for (let device of devices) {
+                        if (device.label.toLowerCase().includes('back') ||
+                            device.label.toLowerCase().includes('rear') ||
+                            device.label.toLowerCase().includes('environment')) {
+                            cameraId = device.id;
+                            break;
+                        }
+                    }
+
+                    html5QrCode.start(
+                        cameraId,
+                        {
+                            fps: 10,
+                            qrbox: { width: 260, height: 260 }, // Increased size for easier scanning
+                            aspectRatio: 1.0,
+                            disableFlip: false,
+                            // experimentalFeatures: { useBarCodeDetectorIfSupported: true } // Optional: Try using native barcode detector if available
+                        },
+                        onScanSuccess,
+                        onScanFailure
+                    ).catch(err => {
+                        console.error("Error starting scanner", err);
+                        alert("Gagal memulai kamera: " + err);
+                    });
+                }
+            }).catch(err => {
+                console.error("Error getting cameras", err);
+            });
+        </script>
     @endpush
 </x-layouts.admin>
