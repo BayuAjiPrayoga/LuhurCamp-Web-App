@@ -421,7 +421,7 @@
                 })
                 .catch(e => console.log('Weather API error, using static fallback'));
 
-            // --- Fetch Packages ---
+            // --- Fetch Packages (Kavlings) ---
             fetch('/api/v1/kavlings')
                 .then(res => res.json())
                 .then(res => {
@@ -431,15 +431,19 @@
                         res.data.forEach(item => {
                             const card = document.createElement('div');
                             card.className = 'bg-secondary-600 rounded-3xl p-6 w-[320px] flex-shrink-0 border border-white/5 hover:border-azure-500/50 transition duration-300 group relative overflow-hidden';
-                            // Use API image or fallback
-                            const image = item.image ? `/storage/${item.image}` : 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80';
+                            // Use API image_url or fallback
+                            const image = item.gambar_url ? item.gambar_url : 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80';
+                            
+                            // Format price
+                            const price = parseInt(item.harga_per_malam).toLocaleString('id-ID');
+
                             card.innerHTML = `
                                     <div class="absolute inset-0 z-0">
                                         <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700" loading="lazy">
                                     </div>
                                     <div class="relative z-10 h-[350px] flex flex-col justify-end">
                                         <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-azure-400 transition">${item.nama}</h3>
-                                        <p class="text-azure-200 font-medium mb-4">IDR ${parseInt(item.harga_per_malam).toLocaleString('id-ID')}</p>
+                                        <p class="text-azure-200 font-medium mb-4">IDR ${price}</p>
                                         <a href="https://wa.me/6281234567890?text=Halo%20LuhurCamp,%20saya%20mau%20booking%20${item.nama}" target="_blank" class="px-6 py-2 bg-azure-600 text-white text-center rounded-xl font-semibold hover:bg-azure-500 transition">Book Now</a>
                                     </div>
                                 `;
@@ -454,10 +458,16 @@
                 .then(res => res.json())
                 .then(res => {
                     const container = document.getElementById('gallery-grid');
-                    // Check standard Laravel resource wrapper 'data' or direct array
-                    const items = res.data || res; 
-                    
-                    if (items && items.length > 0) {
+                    // Check for pagination structure: res.data.data
+                    // Or direct array: res.data
+                    let items = [];
+                    if (res.data && Array.isArray(res.data)) {
+                        items = res.data;
+                    } else if (res.data && res.data.data && Array.isArray(res.data.data)) {
+                        items = res.data.data;
+                    }
+
+                    if (items.length > 0) {
                         container.innerHTML = '';
                         // Limit to first 4 items for the grid
                         const displayItems = items.slice(0, 4);
@@ -471,8 +481,8 @@
                                 div.className = 'col-span-1 row-span-1 relative group overflow-hidden rounded-3xl cursor-pointer';
                             }
 
-                            // Assuming item.image exists. Adjust property name if needed (e.g., item.file, item.url)
-                            const imageUrl = item.image ? `/storage/${item.image}` : 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80';
+                            // Use image_url from accessor or fallback
+                            const imageUrl = item.image_url ? item.image_url : 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80';
                             
                             div.innerHTML = `
                                 <img src="${imageUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" alt="User captured moment">
