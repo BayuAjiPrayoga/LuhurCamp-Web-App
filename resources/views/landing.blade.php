@@ -369,6 +369,83 @@
         </div>
     </section>
 
+    <!-- Blog / Stories Section -->
+    <section id="stories" class="py-24 relative bg-midnight-900 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Stories from the Sky</span>
+                    <h2 class="text-4xl font-bold mt-2">Tips & Tales</h2>
+                </div>
+                <a href="#" class="text-white hover:text-azure-400 transition font-medium text-sm flex items-center gap-2">
+                    View All Stories <span>→</span>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Story 1 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6">
+                        <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80" 
+                             class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute top-4 left-4 bg-midnight-950/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-azure-400 border border-white/10">
+                            Guide
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span>5 min read</span>
+                            <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                            <span>Jan 15, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold group-hover:text-azure-400 transition">Tips Camping Aman Saat Musim Hujan</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2">Persiapan tenda, flysheet, dan perlengkapan lainnya agar tetap nyaman meski diguyur hujan deras di gunung.</p>
+                    </div>
+                </article>
+
+                <!-- Story 2 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6">
+                        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80" 
+                             class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute top-4 left-4 bg-midnight-950/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-azure-400 border border-white/10">
+                            Spot Check
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span>3 min read</span>
+                            <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                            <span>Jan 10, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold group-hover:text-azure-400 transition">Spot Terbaik untuk Foto Citylight</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2">Jangan salah pilih kavling! Ini dia daftar kavling dengan pemandangan lampu kota paling spektakuler tanpa terhalang pohon.</p>
+                    </div>
+                </article>
+
+                <!-- Story 3 -->
+                <article class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-3xl aspect-[4/3] mb-6">
+                        <img src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80" 
+                             class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute top-4 left-4 bg-midnight-950/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-azure-400 border border-white/10">
+                            Food
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span>7 min read</span>
+                            <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                            <span>Jan 08, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold group-hover:text-azure-400 transition">5 Menu Masak Praktis & Hangat</h3>
+                        <p class="text-gray-400 text-sm line-clamp-2">Resep simpel namun nikmat untuk menghangatkan tubuh saat cuaca dingin. Bahan mudah didapat dan cepat dimasak.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
         <!-- Packages & Opening Hours Section -->
         <section id="packages" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
