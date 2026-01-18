@@ -55,7 +55,7 @@
 
                 <a href="{{ route('login') }}"
                     class="px-6 py-2 bg-gradient-to-r from-azure-600 to-azure-500 rounded-full text-sm font-semibold hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] transition-all transform hover:scale-105">
-                    Login / Register
+                    Login
                 </a>
             </div>
         </nav>
@@ -270,16 +270,20 @@
         </div>
     </section>
 
-        <!-- Packages & Opening Hours Section -->
-        <section id="packages" class="py-24 relative">
+        <!-- About Us & Opening Hours Section -->
+        <section id="about" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
                 <!-- Info -->
                 <div>
                     <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">About Place</span>
                     <h2 class="text-5xl font-bold mt-4 mb-6">Luhur Camp <br>Mountain</h2>
                     <p class="text-gray-400 leading-relaxed mb-8">
-                        Rasakan pengalaman camping terbaik di ketinggian 1400 MDPL.
+                        Rasakan pengalaman camping terbaik di ketinggian 1400 MDPL. LuhurCamp menawarkan keindahan alam yang memukau, udara segar pegunungan, dan fasilitas lengkap untuk kenyamanan Anda.
                     </p>
+                    <a href="#packages" class="text-azure-400 font-bold hover:text-white transition flex items-center gap-2">
+                        Explore Packages
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
                 </div>
 
                 <!-- Opening Hours Card -->
@@ -298,6 +302,43 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 relative bg-midnight-800/30">
+            <div class="max-w-7xl mx-auto px-4 text-center mb-12">
+                 <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Get in Touch</span>
+                 <h2 class="text-4xl font-bold mt-2">Contact Us</h2>
+            </div>
+            
+            <div class="max-w-4xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/6281234567890" target="_blank" class="bg-secondary-600/30 hover:bg-secondary-600/50 p-8 rounded-3xl border border-white/5 transition group text-center">
+                    <div class="w-16 h-16 mx-auto bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-4 text-3xl group-hover:scale-110 transition">
+                        📱
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">WhatsApp</h3>
+                    <p class="text-gray-400 text-sm">+62 812-3456-7890</p>
+                </a>
+                
+                <!-- Email -->
+                 <a href="mailto:info@luhurcamp.com" class="bg-secondary-600/30 hover:bg-secondary-600/50 p-8 rounded-3xl border border-white/5 transition group text-center">
+                    <div class="w-16 h-16 mx-auto bg-azure-500/20 text-azure-500 rounded-full flex items-center justify-center mb-4 text-3xl group-hover:scale-110 transition">
+                        ✉️
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Email</h3>
+                    <p class="text-gray-400 text-sm">info@luhurcamp.com</p>
+                </a>
+
+                <!-- Location -->
+                 <a href="https://maps.google.com" target="_blank" class="bg-secondary-600/30 hover:bg-secondary-600/50 p-8 rounded-3xl border border-white/5 transition group text-center">
+                    <div class="w-16 h-16 mx-auto bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mb-4 text-3xl group-hover:scale-110 transition">
+                        📍
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Location</h3>
+                    <p class="text-gray-400 text-sm">Puncak Dua, Bogor</p>
+                </a>
             </div>
         </section>
 
