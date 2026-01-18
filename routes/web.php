@@ -23,16 +23,7 @@ Route::get('/', function () {
     return view('landing');
 })->name('home');
 
-Route::get('/test', function () {
-    return view('test');
-});
 
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'timestamp' => now(),
-    ]);
-});
 
 // Auth Routes
 Route::get('/fix-storage', function () {
