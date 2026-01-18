@@ -46,33 +46,42 @@ class KavlingController extends Controller
      */
     public function store(StoreKavlingRequest $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        // Remove fasilitas if present (not in database schema)
-        unset($data['fasilitas']);
+            // Remove fasilitas if present (not in database schema)
+            unset($data['fasilitas']);
 
-        // Generate unique slug
-        $baseSlug = Str::slug($data['nama']);
-        $slug = $baseSlug;
-        $counter = 1;
+            // Generate unique slug
+            $baseSlug = Str::slug($data['nama']);
+            $slug = $baseSlug;
+            $counter = 1;
 
-        while (Kavling::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $counter;
-            $counter++;
+            while (Kavling::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $data['slug'] = $slug;
+            $data['status'] = $data['status'] ?? 'aktif';
+
+            if ($request->hasFile('gambar')) {
+                $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
+            }
+
+            // Use Eloquent directly instead of repository to avoid DI issues
+            Kavling::create($data);
+
+            return redirect()->route('admin.kavling.index')
+                ->with('success', 'Kavling berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            // Log the error and return it for debugging
+            \Log::error('Kavling store error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
         }
-
-        $data['slug'] = $slug;
-        $data['status'] = $data['status'] ?? 'aktif';
-
-        if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
-        }
-
-        // Use Eloquent directly instead of repository to avoid DI issues
-        Kavling::create($data);
-
-        return redirect()->route('admin.kavling.index')
-            ->with('success', 'Kavling berhasil ditambahkan.');
     }
 
     /**
