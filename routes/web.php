@@ -20,8 +20,8 @@ use App\Http\Controllers\Auth\LoginController;
 
 // Public Routes
 Route::get('/', function () {
-    return redirect()->route('admin.dashboard');
-});
+    return view('landing');
+})->name('home');
 
 // Auth Routes
 Route::get('/fix-storage', function () {
