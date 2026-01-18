@@ -68,7 +68,8 @@
 
                     <div class="flex items-center gap-6 mt-8">
                         <!-- Play Video Button -->
-                        <a href="https://youtu.be/r31am7oPNkg?si=weynxrye_JOx2gdZ" target="_blank" class="relative group cursor-pointer animate-float">
+                        <a href="https://youtu.be/r31am7oPNkg?si=weynxrye_JOx2gdZ" target="_blank"
+                            class="relative group cursor-pointer animate-float">
                             <div
                                 class="w-16 h-16 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm group-hover:bg-white/10 transition">
                                 <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center">
@@ -229,6 +230,85 @@
             </div>
         </section>
 
+        <!-- FAQ Section -->
+        <section id="faq" class="py-24 relative overflow-hidden">
+            <div class="max-w-4xl mx-auto px-4 relative z-10">
+                <div class="text-center mb-16">
+                    <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Need Help?</span>
+                    <h2 class="text-4xl font-bold mt-2">Frequently Asked Questions</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- FAQ Item 1 -->
+                    <div
+                        class="group bg-secondary-600/30 border border-white/5 rounded-2xl overflow-hidden hover:bg-secondary-600/50 transition duration-300">
+                        <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
+                            onclick="this.parentElement.classList.toggle('active')">
+                            <span class="font-bold text-lg text-white">Apakah ada listrik di setiap kavling?</span>
+                            <span
+                                class="text-azure-400 text-2xl transform transition-transform duration-300 group-[.active]:rotate-45">+</span>
+                        </button>
+                        <div
+                            class="px-6 pb-0 h-0 overflow-hidden transition-all duration-300 group-[.active]:h-auto group-[.active]:pb-6">
+                            <p class="text-gray-400">Ya, setiap kavling camping sudah dilengkapi dengan terminal listrik 24
+                                jam. Anda bisa mencharge HP atau menggunakan alat elektronik lainnya tanpa biaya tambahan.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div
+                        class="group bg-secondary-600/30 border border-white/5 rounded-2xl overflow-hidden hover:bg-secondary-600/50 transition duration-300">
+                        <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
+                            onclick="this.parentElement.classList.toggle('active')">
+                            <span class="font-bold text-lg text-white">Bagaimana akses jalan menuju lokasi?</span>
+                            <span
+                                class="text-azure-400 text-2xl transform transition-transform duration-300 group-[.active]:rotate-45">+</span>
+                        </button>
+                        <div
+                            class="px-6 pb-0 h-0 overflow-hidden transition-all duration-300 group-[.active]:h-auto group-[.active]:pb-6">
+                            <p class="text-gray-400">Jalan menuju LuhurCamp sudah beraspal dan beton. Bisa dilalui oleh
+                                mobil (City Car aman) maupun motor. Namun, harap berhati-hati saat hujan karena jalanan bisa
+                                licin dan berkabut.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div
+                        class="group bg-secondary-600/30 border border-white/5 rounded-2xl overflow-hidden hover:bg-secondary-600/50 transition duration-300">
+                        <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
+                            onclick="this.parentElement.classList.toggle('active')">
+                            <span class="font-bold text-lg text-white">Apakah menyediakan sewa tenda?</span>
+                            <span
+                                class="text-azure-400 text-2xl transform transition-transform duration-300 group-[.active]:rotate-45">+</span>
+                        </button>
+                        <div
+                            class="px-6 pb-0 h-0 overflow-hidden transition-all duration-300 group-[.active]:h-auto group-[.active]:pb-6">
+                            <p class="text-gray-400">Tentu! Kami menyewakan paket tenda lengkap (Tenda, Matras, Sleeping
+                                Bag, Lampu) dengan harga terjangkau. Anda bisa memesannya saat booking online atau langsung
+                                di lokasi (selama persediaan ada).</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div
+                        class="group bg-secondary-600/30 border border-white/5 rounded-2xl overflow-hidden hover:bg-secondary-600/50 transition duration-300">
+                        <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
+                            onclick="this.parentElement.classList.toggle('active')">
+                            <span class="font-bold text-lg text-white">Apakah sinyal HP bagus?</span>
+                            <span
+                                class="text-azure-400 text-2xl transform transition-transform duration-300 group-[.active]:rotate-45">+</span>
+                        </button>
+                        <div
+                            class="px-6 pb-0 h-0 overflow-hidden transition-all duration-300 group-[.active]:h-auto group-[.active]:pb-6">
+                            <p class="text-gray-400">Sinyal Telkomsel dan XL cukup stabil di area camp. Kami juga
+                                menyediakan fasilitas WiFi gratis di area utama dan kantin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer (Simple) -->
         <footer class="py-12 border-t border-white/5 bg-midnight-950">
             <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
@@ -302,28 +382,28 @@
                             const image = item.image ? `/storage/${item.image}` : 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80';
 
                             card.innerHTML = `
-                                <div class="absolute inset-0 z-0">
-                                    <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-midnight-900 via-secondary-600/50 to-transparent"></div>
-                                </div>
-
-                                <div class="relative z-10 h-[350px] flex flex-col">
-                                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-azure-400 transition">${item.nama}</h3>
-                                    <p class="text-azure-200 text-sm mb-4">Max ${item.kapasitas} Person</p>
-
-                                    <p class="text-gray-300 text-sm line-clamp-3 mb-auto">${item.deskripsi || 'Perfect spot for camping.'}</p>
-
-                                    <div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
-                                        <div>
-                                            <p class="text-xs text-gray-400">Start from</p>
-                                            <p class="text-xl font-bold text-white">IDR ${parseInt(item.harga_per_malam).toLocaleString('id-ID')}</p>
-                                        </div>
-                                        <a href="#" class="w-10 h-10 rounded-full bg-azure-500 flex items-center justify-center text-white hover:bg-azure-400 transition shadow-lg shadow-azure-500/30">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                        </a>
+                                    <div class="absolute inset-0 z-0">
+                                        <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-midnight-900 via-secondary-600/50 to-transparent"></div>
                                     </div>
-                                </div>
-                            `;
+
+                                    <div class="relative z-10 h-[350px] flex flex-col">
+                                        <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-azure-400 transition">${item.nama}</h3>
+                                        <p class="text-azure-200 text-sm mb-4">Max ${item.kapasitas} Person</p>
+
+                                        <p class="text-gray-300 text-sm line-clamp-3 mb-auto">${item.deskripsi || 'Perfect spot for camping.'}</p>
+
+                                        <div class="mt-6 pt-6 border-t border-white/10 flex justify-between items-center">
+                                            <div>
+                                                <p class="text-xs text-gray-400">Start from</p>
+                                                <p class="text-xl font-bold text-white">IDR ${parseInt(item.harga_per_malam).toLocaleString('id-ID')}</p>
+                                            </div>
+                                            <a href="#" class="w-10 h-10 rounded-full bg-azure-500 flex items-center justify-center text-white hover:bg-azure-400 transition shadow-lg shadow-azure-500/30">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
                             container.appendChild(card);
                         });
                     }
