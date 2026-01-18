@@ -95,7 +95,7 @@
                 <div class="lg:col-span-4 flex flex-col justify-between h-[60vh] py-10">
                     <!-- Weather Widget -->
                     <div
-                        class="bg-midnight-800/50 backdrop-blur-md border border-white/10 p-6 rounded-3xl self-end w-full max-w-xs transition hover:bg-midnight-800/70">
+                        class="bg-midnight-800/50 backdrop-blur-md border border-white/10 p-6 rounded-3xl self-end w-full max-w-xs transition hover:bg-midnight-800/70 mb-4">
                         <div class="flex justify-between items-start mb-4">
                             <span class="bg-azure-500 text-white text-xs px-3 py-1 rounded-full">Today</span>
                             <span class="text-sm text-gray-400">Puncak Dua</span>
@@ -124,25 +124,53 @@
                         </div>
                     </div>
 
-                    <!-- Info Card -->
+                    <!-- Altitude / Flight Widget -->
                     <div class="mt-auto self-end w-full max-w-xs">
-                        <div
-                            class="bg-gradient-to-br from-azure-900/80 to-midnight-800/80 backdrop-blur-md p-6 rounded-3xl border border-azure-500/30 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
-                            <div
-                                class="absolute -right-10 -top-10 w-32 h-32 bg-azure-500/20 rounded-full blur-3xl group-hover:bg-azure-500/30 transition">
+                        <div class="bg-gradient-to-br from-secondary-900/90 to-midnight-900/90 backdrop-blur-md p-6 rounded-3xl border border-white/10 relative overflow-hidden group">
+                            <!-- Animated Gauge Background -->
+                            <div class="absolute right-0 top-0 opacity-20 transform translate-x-1/4 -translate-y-1/4">
+                                <svg class="w-32 h-32 text-azure-500 animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="10 5"/>
+                                </svg>
                             </div>
 
-                            <h3 class="text-4xl font-bold mb-2">03</h3>
-                            <p class="text-lg font-medium mb-4">Camping Packages</p>
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-xs font-bold text-azure-400 uppercase tracking-widest">Altimeter</span>
+                                    <div class="flex items-center gap-1 text-green-400 text-xs">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Live
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-end gap-2 mb-2">
+                                    <span class="text-5xl font-bold text-white tracking-tighter">1400</span>
+                                    <span class="text-lg text-gray-400 mb-2">MDPL</span>
+                                </div>
+                                <p class="text-xs text-gray-400 mb-4">Meters Above Sea Level</p>
 
-                            <p class="text-xs text-gray-300 leading-relaxed mb-4">
-                                Choose your perfect spot. From ground camping to VIP glamping decks.
-                            </p>
-
-                            <a href="#packages"
-                                class="inline-flex items-center text-sm text-azure-400 hover:text-white transition gap-2">
-                                Check Availability <span class="text-lg">→</span>
-                            </a>
+                                <div class="space-y-3">
+                                    <!-- Comparison -->
+                                    <div class="flex items-center gap-3 text-xs text-gray-300">
+                                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                            🏢
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white">Higher than</p>
+                                            <p>Burj Khalifa (828m)</p>
+                                        </div>
+                                    </div>
+                                    <!-- Oxygen -->
+                                    <div class="flex items-center gap-3 text-xs text-gray-300">
+                                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                            🌬️
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-white">Oxygen Level</p>
+                                            <p>~95% (Fresh Air)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
