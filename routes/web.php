@@ -41,6 +41,35 @@ Route::get('/debug-php', function () {
         'memory_limit' => ini_get('memory_limit'),
     ];
 });
+
+// Debug route to check file state on server
+Route::get('/debug-kavling', function () {
+    $filePath = app_path('Http/Controllers/Admin/KavlingController.php');
+    $content = file_get_contents($filePath);
+
+    // Check if constructor exists
+    $hasConstructor = str_contains($content, '__construct');
+    $hasRepository = str_contains($content, 'KavlingRepositoryInterface');
+
+    // Try to instantiate the controller
+    $instantiateResult = 'Not tested';
+    try {
+        $controller = app(\App\Http\Controllers\Admin\KavlingController::class);
+        $instantiateResult = 'SUCCESS - Controller instantiated';
+    } catch (\Exception $e) {
+        $instantiateResult = 'FAILED: ' . $e->getMessage();
+    }
+
+    return response()->json([
+        'file_exists' => file_exists($filePath),
+        'file_modified' => date('Y-m-d H:i:s', filemtime($filePath)),
+        'has_constructor' => $hasConstructor,
+        'has_repository_interface' => $hasRepository,
+        'controller_instantiate' => $instantiateResult,
+        'first_50_chars' => substr($content, 0, 500),
+        'opcache_enabled' => function_exists('opcache_get_status') ? opcache_get_status() !== false : 'N/A',
+    ]);
+});
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
