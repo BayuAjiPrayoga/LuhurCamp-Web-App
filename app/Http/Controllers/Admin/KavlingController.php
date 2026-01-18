@@ -73,7 +73,8 @@ class KavlingController extends Controller
             $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
         }
 
-        $this->kavlingRepository->create($data);
+        // Use Eloquent directly instead of repository to avoid DI issues
+        Kavling::create($data);
 
         return redirect()->route('admin.kavling.index')
             ->with('success', 'Kavling berhasil ditambahkan.');
@@ -116,7 +117,8 @@ class KavlingController extends Controller
             $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
         }
 
-        $this->kavlingRepository->update($kavling->id, $data);
+        // Use Eloquent directly instead of repository
+        $kavling->update($data);
 
         return redirect()->route('admin.kavling.index')
             ->with('success', 'Kavling berhasil diperbarui.');
@@ -132,7 +134,8 @@ class KavlingController extends Controller
             \Storage::disk('public')->delete($kavling->gambar);
         }
 
-        $this->kavlingRepository->delete($kavling->id);
+        // Use Eloquent directly instead of repository
+        $kavling->delete();
 
         return redirect()->route('admin.kavling.index')
             ->with('success', 'Kavling berhasil dihapus.');
