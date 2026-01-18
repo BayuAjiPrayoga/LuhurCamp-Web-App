@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <!-- <link rel="manifest" href="{{ asset('manifest.json') }}"> -->
     <meta name="theme-color" content="#0F172A">
 
     @stack('styles')
@@ -25,13 +25,13 @@
 <body class="antialiased bg-background text-gray-800">
     @yield('content')
 
-    <script>
+    <!-- <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js');
             });
         }
-    </script>
+    </script> -->
     @stack('scripts')
 </body>
 
