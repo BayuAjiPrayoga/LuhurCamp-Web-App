@@ -68,7 +68,7 @@
 
                     <div class="flex items-center gap-6 mt-8">
                         <!-- Play Video Button -->
-                        <div class="relative group cursor-pointer animate-float">
+                        <a href="https://youtu.be/r31am7oPNkg?si=weynxrye_JOx2gdZ" target="_blank" class="relative group cursor-pointer animate-float">
                             <div
                                 class="w-16 h-16 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm group-hover:bg-white/10 transition">
                                 <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center">
@@ -80,7 +80,7 @@
                             <span
                                 class="absolute ml-20 top-1/2 -translate-y-1/2 text-sm font-medium w-max text-white/80 group-hover:text-white transition">Watch
                                 Video</span>
-                        </div>
+                        </a>
 
                         <!-- Scroll Indicator -->
                         <div class="hidden md:flex flex-col items-center gap-2 ml-32 opacity-60">
