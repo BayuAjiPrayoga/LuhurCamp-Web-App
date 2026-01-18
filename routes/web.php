@@ -122,6 +122,66 @@ Route::get('/debug-store', function () {
 
     return response()->json($results);
 });
+
+// Debug POST route - bypasses FormRequest to test raw store
+Route::match(['get', 'post'], '/debug-form-test', function (\Illuminate\Http\Request $request) {
+    $results = ['method' => $request->method()];
+
+    if ($request->isMethod('post')) {
+        try {
+            // Get all input
+            $results['all_input'] = $request->except(['_token', 'gambar']);
+            $results['has_file'] = $request->hasFile('gambar') ? 'YES' : 'NO';
+
+            // Try to validate manually
+            $validator = \Validator::make($request->all(), [
+                'nama' => 'required|string|max:100',
+                'kapasitas' => 'required|integer|min:1',
+                'harga_per_malam' => 'required|numeric|min:0',
+                'deskripsi' => 'nullable|string',
+                'status' => 'nullable|in:aktif,nonaktif,penuh,maintenance',
+                'gambar' => 'nullable|image|max:2048',
+            ]);
+
+            if ($validator->fails()) {
+                $results['validation'] = 'FAILED';
+                $results['errors'] = $validator->errors()->toArray();
+            } else {
+                $results['validation'] = 'PASSED';
+
+                // Try actual create
+                $data = $validator->validated();
+                $data['slug'] = \Illuminate\Support\Str::slug($data['nama']) . '-' . time();
+                $data['status'] = $data['status'] ?? 'aktif';
+
+                if ($request->hasFile('gambar')) {
+                    $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
+                    $results['file_stored'] = $data['gambar'];
+                }
+
+                $kavling = \App\Models\Kavling::create($data);
+                $results['create'] = 'SUCCESS - ID: ' . $kavling->id;
+            }
+        } catch (\Exception $e) {
+            $results['error'] = $e->getMessage();
+            $results['trace'] = $e->getTraceAsString();
+        }
+    } else {
+        // Show simple form
+        return '<form method="POST" enctype="multipart/form-data">
+            ' . csrf_field() . '
+            <p>Nama: <input name="nama" value="Test Kavling"></p>
+            <p>Kapasitas: <input name="kapasitas" type="number" value="4"></p>
+            <p>Harga: <input name="harga_per_malam" type="number" value="150000"></p>
+            <p>Deskripsi: <textarea name="deskripsi">Test desc</textarea></p>
+            <p>Status: <select name="status"><option value="aktif">Aktif</option></select></p>
+            <p>Gambar: <input type="file" name="gambar"></p>
+            <button type="submit">Test Submit</button>
+        </form>';
+    }
+
+    return response()->json($results);
+});
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
