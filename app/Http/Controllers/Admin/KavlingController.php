@@ -56,12 +56,12 @@ class KavlingController extends Controller
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Generate unique slug
+        // Generate unique slug - use withTrashed() to check soft-deleted records too!
         $baseSlug = Str::slug($validated['nama']);
         $slug = $baseSlug;
         $counter = 1;
 
-        while (Kavling::where('slug', $slug)->exists()) {
+        while (Kavling::withTrashed()->where('slug', $slug)->exists()) {
             $slug = $baseSlug . '-' . $counter;
             $counter++;
         }
@@ -95,12 +95,12 @@ class KavlingController extends Controller
         $data = $request->validated();
 
         if ($kavling->nama !== $data['nama']) {
-            // Generate unique slug
+            // Generate unique slug - use withTrashed() to check soft-deleted records too!
             $baseSlug = Str::slug($data['nama']);
             $slug = $baseSlug;
             $counter = 1;
 
-            while (Kavling::where('slug', $slug)->where('id', '!=', $kavling->id)->exists()) {
+            while (Kavling::withTrashed()->where('slug', $slug)->where('id', '!=', $kavling->id)->exists()) {
                 $slug = $baseSlug . '-' . $counter;
                 $counter++;
             }

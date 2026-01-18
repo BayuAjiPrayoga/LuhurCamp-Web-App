@@ -262,12 +262,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
                 'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
 
-            // Generate unique slug
+            // Generate unique slug - use withTrashed() to check soft-deleted records too!
             $baseSlug = \Illuminate\Support\Str::slug($validated['nama']);
             $slug = $baseSlug;
             $counter = 1;
 
-            while (\App\Models\Kavling::where('slug', $slug)->exists()) {
+            while (\App\Models\Kavling::withTrashed()->where('slug', $slug)->exists()) {
                 $slug = $baseSlug . '-' . $counter;
                 $counter++;
             }
