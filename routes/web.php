@@ -252,36 +252,52 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Override kavling store with inline handler (bypassing controller completely)
     Route::post('/kavling', function (\Illuminate\Http\Request $request) {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'kapasitas' => 'required|integer|min:1|max:20',
-            'harga_per_malam' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string|max:1000',
-            'status' => 'nullable|in:aktif,nonaktif,penuh,maintenance',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nama' => 'required|string|max:100',
+                'kapasitas' => 'required|integer|min:1|max:20',
+                'harga_per_malam' => 'required|numeric|min:0',
+                'deskripsi' => 'nullable|string|max:1000',
+                'status' => 'nullable|in:aktif,nonaktif,penuh,maintenance',
+                'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            ]);
 
-        // Generate unique slug
-        $baseSlug = \Illuminate\Support\Str::slug($validated['nama']);
-        $slug = $baseSlug;
-        $counter = 1;
+            // Generate unique slug
+            $baseSlug = \Illuminate\Support\Str::slug($validated['nama']);
+            $slug = $baseSlug;
+            $counter = 1;
 
-        while (\App\Models\Kavling::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $counter;
-            $counter++;
+            while (\App\Models\Kavling::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $validated['slug'] = $slug;
+            $validated['status'] = $validated['status'] ?? 'aktif';
+
+            if ($request->hasFile('gambar')) {
+                $validated['gambar'] = $request->file('gambar')->store('kavlings', 'public');
+            }
+
+            \App\Models\Kavling::create($validated);
+
+            return redirect()->route('admin.kavling.index')
+                ->with('success', 'Kavling berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            \Log::error('Kavling inline store error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->except(['gambar', '_token'])
+            ]);
+
+            // Return error as JSON for debugging
+            return response()->json([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'request_data' => $request->except(['gambar', '_token']),
+                'has_file' => $request->hasFile('gambar'),
+            ], 500);
         }
-
-        $validated['slug'] = $slug;
-        $validated['status'] = $validated['status'] ?? 'aktif';
-
-        if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('kavlings', 'public');
-        }
-
-        \App\Models\Kavling::create($validated);
-
-        return redirect()->route('admin.kavling.index')
-            ->with('success', 'Kavling berhasil ditambahkan.');
     })->name('kavling.store');
 
     // Master Data - keep resource but exclude store since we override it above
