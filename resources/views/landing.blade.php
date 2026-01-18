@@ -6,6 +6,34 @@
     <div
         class="min-h-screen bg-midnight-900 text-white font-sans selection:bg-azure-500 selection:text-white overflow-x-hidden">
 
+        <!-- Live Campers Counter (Floating Widget) -->
+        <div id="live-campers-widget" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-700 ease-out">
+            <div class="bg-midnight-900/90 backdrop-blur-md border border-azure-500/30 p-4 rounded-2xl shadow-2xl flex items-center gap-4 relative overflow-hidden group">
+                <!-- Glow Effect -->
+                <div class="absolute inset-0 bg-azure-500/10 blur-xl group-hover:bg-azure-500/20 transition"></div>
+                
+                <div class="relative z-10 flex items-center gap-3">
+                    <div class="relative">
+                        <span class="absolute top-0 right-0 w-3 h-3 bg-green-500 border-2 border-midnight-900 rounded-full z-10 animate-pulse"></span>
+                        <div class="flex -space-x-3">
+                            <img class="w-10 h-10 rounded-full border-2 border-midnight-900 object-cover" src="https://i.pravatar.cc/100?img=33" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-midnight-900 object-cover" src="https://i.pravatar.cc/100?img=47" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-midnight-900 object-cover" src="https://i.pravatar.cc/100?img=12" alt="">
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-azure-400 font-bold uppercase tracking-wider mb-0.5">Happening Now</p>
+                        <p class="text-sm font-medium text-white"><span id="camper-count" class="font-bold text-lg text-white">24</span> Campers are here</p>
+                    </div>
+                </div>
+                
+                <!-- Close Button -->
+                <button onclick="document.getElementById('live-campers-widget').classList.add('translate-y-20', 'opacity-0')" class="absolute top-1 right-1 p-1 text-gray-500 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+        </div>
+
         <!-- Navbar -->
         <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
