@@ -5,17 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreKavlingRequest;
 use App\Http\Requests\Admin\UpdateKavlingRequest;
-use App\Repositories\Contracts\KavlingRepositoryInterface;
 use App\Models\Kavling;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class KavlingController extends Controller
 {
-    public function __construct(
-        protected KavlingRepositoryInterface $kavlingRepository
-    ) {
-    }
 
     /**
      * Display a listing of kavlings
