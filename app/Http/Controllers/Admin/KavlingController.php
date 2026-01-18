@@ -53,6 +53,9 @@ class KavlingController extends Controller
     {
         $data = $request->validated();
 
+        // Remove fasilitas if present (not in database schema)
+        unset($data['fasilitas']);
+
         // Generate unique slug
         $baseSlug = Str::slug($data['nama']);
         $slug = $baseSlug;
