@@ -70,6 +70,58 @@ Route::get('/debug-kavling', function () {
         'opcache_enabled' => function_exists('opcache_get_status') ? opcache_get_status() !== false : 'N/A',
     ]);
 });
+
+// Debug route to test store process
+Route::get('/debug-store', function () {
+    $results = [];
+
+    // 1. Test Database Connection
+    try {
+        \DB::connection()->getPdo();
+        $results['db_connection'] = 'SUCCESS';
+    } catch (\Exception $e) {
+        $results['db_connection'] = 'FAILED: ' . $e->getMessage();
+    }
+
+    // 2. Test Kavling Model count
+    try {
+        $count = \App\Models\Kavling::count();
+        $results['kavling_count'] = 'SUCCESS - Count: ' . $count;
+    } catch (\Exception $e) {
+        $results['kavling_count'] = 'FAILED: ' . $e->getMessage();
+    }
+
+    // 3. Test Kavling::create with dummy data
+    try {
+        $testData = [
+            'nama' => 'Test Kavling ' . time(),
+            'slug' => 'test-kavling-' . time(),
+            'kapasitas' => 4,
+            'harga_per_malam' => 150000,
+            'deskripsi' => 'Test deskripsi',
+            'status' => 'aktif',
+        ];
+        $kavling = \App\Models\Kavling::create($testData);
+        $results['kavling_create'] = 'SUCCESS - Created ID: ' . $kavling->id;
+
+        // Clean up
+        $kavling->forceDelete();
+        $results['kavling_cleanup'] = 'Deleted test data';
+    } catch (\Exception $e) {
+        $results['kavling_create'] = 'FAILED: ' . $e->getMessage();
+    }
+
+    // 4. Check storage
+    try {
+        $storagePath = storage_path('app/public/kavlings');
+        $results['storage_exists'] = file_exists($storagePath) ? 'YES' : 'NO';
+        $results['storage_writable'] = is_writable(storage_path('app/public')) ? 'YES' : 'NO';
+    } catch (\Exception $e) {
+        $results['storage'] = 'FAILED: ' . $e->getMessage();
+    }
+
+    return response()->json($results);
+});
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
