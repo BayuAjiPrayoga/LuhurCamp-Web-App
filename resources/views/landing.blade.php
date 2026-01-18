@@ -695,6 +695,29 @@
                         });
                     }
                 });
+
+            // --- Live Campers Widget Logic ---
+            setTimeout(() => {
+                const widget = document.getElementById('live-campers-widget');
+                const countEl = document.getElementById('camper-count');
+                
+                // Show widget after 3 seconds
+                if(widget) {
+                    widget.classList.remove('translate-y-20', 'opacity-0');
+                }
+
+                // Randomize count periodically to simulate "Live"
+                setInterval(() => {
+                    if(countEl) {
+                        const current = parseInt(countEl.innerText);
+                        const change = Math.random() > 0.5 ? 1 : -1;
+                        let newCount = current + change;
+                        if(newCount < 15) newCount = 15; // Min limit
+                        if(newCount > 40) newCount = 40; // Max limit
+                        countEl.innerText = newCount;
+                    }
+                }, 8000); // Update every 8 seconds
+            }, 3000);
         });
     </script>
     <style>
