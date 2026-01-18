@@ -162,6 +162,48 @@
             </div>
         </section>
 
+    <!-- Interactive Map Section -->
+    <section id="map" class="py-24 relative overflow-hidden bg-midnight-950">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Explore Location</span>
+                <h2 class="text-4xl font-bold mt-2">Campsite Map</h2>
+                <p class="text-gray-400 mt-4 max-w-2xl mx-auto">
+                    Interactive view of our camping grounds. Click on the pins to see spot details.
+                </p>
+            </div>
+
+            <!-- Map Container -->
+            <div class="relative w-full h-[600px] bg-midnight-800 rounded-3xl border border-white/5 overflow-hidden shadow-2xl group">
+                <!-- Fallback/Background Map Image (Abstract Mountain Terrain) -->
+                <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1548588627-f978862b85e1?auto=format&fit=crop&q=80')] bg-cover bg-center grayscale transition duration-700 group-hover:grayscale-0"></div>
+                
+                <!-- Map Grid Overlay -->
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+                <!-- Interactive Pins (Mocked Position) -->
+                <!-- We will populate this with JS based on API, for now hardcoded demo pins -->
+                <div id="map-pins-container" class="absolute inset-0">
+                    <!-- Pin Template -->
+                    <!-- <div class="absolute cursor-pointer group/pin hover:z-50" style="top: 30%; left: 40%;">
+                        <div class="w-8 h-8 -ml-4 -mt-8 bg-azure-500 rounded-full border-4 border-midnight-900 shadow-[0_0_20px_rgba(14,165,233,0.6)] animate-bounce"></div>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-48 bg-midnight-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 opacity-0 group-hover/pin:opacity-100 transition duration-300 pointer-events-none transform translate-y-2 group-hover/pin:translate-y-0 text-center">
+                            <h4 class="font-bold text-white">Kavling A1</h4>
+                            <p class="text-xs text-azure-400">View Citylight</p>
+                            <p class="text-xs text-gray-300 mt-1">Status: <span class="text-green-400">Available</span></p>
+                        </div>
+                    </div> -->
+                </div>
+                
+                <!-- Legend -->
+                <div class="absolute bottom-6 left-6 bg-midnight-900/80 backdrop-blur-md p-4 rounded-xl border border-white/10 text-xs">
+                    <div class="flex items-center gap-2 mb-2"><div class="w-3 h-3 rounded-full bg-azure-500"></div> Available</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div> Booked</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
         <!-- Packages & Opening Hours Section -->
         <section id="packages" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
@@ -478,6 +520,44 @@
                     }
                 })
                 .catch(e => console.error('Error loading packages'));
+
+            // --- Interactive Map Logic ---
+            fetch('/api/v1/kavlings')
+                .then(res => res.json())
+                .then(res => {
+                    const mapContainer = document.getElementById('map-pins-container');
+                    if(res.success && res.data.length > 0 && mapContainer) {
+                        // Mock positions for demo since API doesn't have coordinates
+                        const positions = [
+                            {t: '30%', l: '40%'}, {t: '50%', l: '60%'}, {t: '70%', l: '30%'}, 
+                            {t: '20%', l: '70%'}, {t: '60%', l: '20%'}, {t: '40%', l: '80%'}
+                        ];
+                        
+                        res.data.slice(0, 6).forEach((item, index) => {
+                            const pos = positions[index] || {t: Math.random()*80+'%', l: Math.random()*80+'%'};
+                            const isAvailable = Math.random() > 0.3; // Mock availability for variety if API returns all true
+                            const statusColor = isAvailable ? 'bg-azure-500' : 'bg-red-500';
+                            const statusText = isAvailable ? 'Available' : 'Booked';
+
+                            const pin = document.createElement('div');
+                            pin.className = 'absolute cursor-pointer group/pin hover:z-50';
+                            pin.style.top = pos.t;
+                            pin.style.left = pos.l;
+                            
+                            pin.innerHTML = `
+                                <div class="w-6 h-6 -ml-3 -mt-3 ${statusColor} rounded-full border-2 border-midnight-900 shadow-[0_0_15px_currentColor] transition hover:scale-125"></div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-midnight-900/90 backdrop-blur-md p-3 rounded-xl border border-white/10 opacity-0 group-hover/pin:opacity-100 transition duration-300 pointer-events-none transform translate-y-2 group-hover/pin:translate-y-0 text-center z-50">
+                                    <h4 class="font-bold text-white text-sm">${item.nama}</h4>
+                                    <p class="text-[10px] text-gray-300 mt-1">Cap: ${item.kapasitas} Pax</p>
+                                    <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] ${isAvailable ? 'bg-azure-500/20 text-azure-400' : 'bg-red-500/20 text-red-400'} border border-white/5">
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            `;
+                            mapContainer.appendChild(pin);
+                        });
+                    }
+                });
         });
     </script>
     <style>
