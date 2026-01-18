@@ -44,44 +44,39 @@ class KavlingController extends Controller
     /**
      * Store a newly created kavling
      */
-    public function store(StoreKavlingRequest $request)
+    public function store(Request $request)
     {
-        try {
-            $data = $request->validated();
+        // Manual validation instead of StoreKavlingRequest (which was causing 500 error)
+        $validated = $request->validate([
+            'nama' => 'required|string|max:100',
+            'kapasitas' => 'required|integer|min:1|max:20',
+            'harga_per_malam' => 'required|numeric|min:0',
+            'deskripsi' => 'nullable|string|max:1000',
+            'status' => 'nullable|in:aktif,nonaktif,penuh,maintenance',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-            // Remove fasilitas if present (not in database schema)
-            unset($data['fasilitas']);
+        // Generate unique slug
+        $baseSlug = Str::slug($validated['nama']);
+        $slug = $baseSlug;
+        $counter = 1;
 
-            // Generate unique slug
-            $baseSlug = Str::slug($data['nama']);
-            $slug = $baseSlug;
-            $counter = 1;
-
-            while (Kavling::where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $counter;
-                $counter++;
-            }
-
-            $data['slug'] = $slug;
-            $data['status'] = $data['status'] ?? 'aktif';
-
-            if ($request->hasFile('gambar')) {
-                $data['gambar'] = $request->file('gambar')->store('kavlings', 'public');
-            }
-
-            // Use Eloquent directly instead of repository to avoid DI issues
-            Kavling::create($data);
-
-            return redirect()->route('admin.kavling.index')
-                ->with('success', 'Kavling berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            // Log the error and return it for debugging
-            \Log::error('Kavling store error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return back()->withInput()->with('error', 'Error: ' . $e->getMessage());
+        while (Kavling::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
         }
+
+        $validated['slug'] = $slug;
+        $validated['status'] = $validated['status'] ?? 'aktif';
+
+        if ($request->hasFile('gambar')) {
+            $validated['gambar'] = $request->file('gambar')->store('kavlings', 'public');
+        }
+
+        Kavling::create($validated);
+
+        return redirect()->route('admin.kavling.index')
+            ->with('success', 'Kavling berhasil ditambahkan.');
     }
 
     /**
