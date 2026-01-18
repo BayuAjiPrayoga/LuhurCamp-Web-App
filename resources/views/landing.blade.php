@@ -10,7 +10,7 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="#" class="text-2xl font-bold tracking-wider flex items-center gap-3">
-                        <img src="{{ asset('storage/logoskycamp.png') }}" alt="LuhurCamp Logo" class="h-12 w-auto filter drop-shadow-lg">
+                        <img src="{{ asset('images/logoskycamp.png') }}" alt="LuhurCamp Logo" class="h-12 w-auto filter drop-shadow-lg">
                         <span class="hidden sm:block text-shadow-md">LuhurCamp</span>
                     </a>
                 </div>
