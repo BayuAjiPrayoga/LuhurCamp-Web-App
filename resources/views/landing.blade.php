@@ -204,6 +204,59 @@
         </div>
     </section>
 
+    <!-- Virtual Tour Section (Panorama) -->
+    <section id="virtual-tour" class="py-24 relative overflow-hidden bg-midnight-900">
+        <div class="max-w-7xl mx-auto px-4 mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+                <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Experience It</span>
+                <h2 class="text-4xl font-bold mt-2">Virtual Tour</h2>
+                <p class="text-gray-400 mt-2">Drag or move mouse to explore the view.</p>
+            </div>
+            <div class="flex gap-2">
+                <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition" onclick="document.getElementById('pano-viewer').scrollLeft -= 50">
+                    ←
+                </button>
+                <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition" onclick="document.getElementById('pano-viewer').scrollLeft += 50">
+                    →
+                </button>
+            </div>
+        </div>
+
+        <!-- Panorama Viewer -->
+        <div class="w-full h-[60vh] relative group cursor-grab active:cursor-grabbing overflow-hidden">
+             <!-- Overlay Text -->
+             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none text-center opacity-0 group-hover:opacity-100 transition duration-500">
+                <div class="bg-black/50 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
+                    <span class="text-white font-medium tracking-wider">360° VIEW</span>
+                </div>
+             </div>
+
+             <!-- The Panorama Image Container -->
+            <div id="pano-viewer" class="w-full h-full overflow-x-scroll hide-scrollbar scroll-smooth relative" 
+                 onmousemove="const w=this.scrollWidth-this.clientWidth; const p=event.clientX/window.innerWidth; this.scrollLeft=p*w;">
+                <div class="w-[300vw] h-full relative">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80" 
+                         class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition duration-700"
+                         loading="lazy">
+                    
+                    <!-- Points of Interest -->
+                    <div class="absolute top-1/2 left-[20%] group/poi">
+                        <div class="w-4 h-4 bg-white rounded-full animate-ping"></div>
+                        <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/poi:opacity-100 transition">North Peak</div>
+                    </div>
+                    <div class="absolute top-2/3 left-[50%] group/poi">
+                         <div class="w-4 h-4 bg-white rounded-full animate-ping delay-300"></div>
+                         <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/poi:opacity-100 transition">Camping Ground A</div>
+                    </div>
+                    <div class="absolute top-1/3 left-[80%] group/poi">
+                         <div class="w-4 h-4 bg-white rounded-full animate-ping delay-700"></div>
+                         <div class="absolute top-6 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/poi:opacity-100 transition">Sunrise Point</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
         <!-- Packages & Opening Hours Section -->
         <section id="packages" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
