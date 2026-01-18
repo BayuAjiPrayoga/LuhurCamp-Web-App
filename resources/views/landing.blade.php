@@ -214,7 +214,76 @@
             </div>
         </section>
 
-        <!-- Ticket/Packages Horizontal Scroll -->
+            </section>
+
+    <!-- Reviews / Testimonials Section -->
+    <section id="reviews" class="py-24 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-azure-900/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary-900/20 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 relative z-10 mx-auto">
+             <div class="text-center mb-12">
+                <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">Stories from the Sky</span>
+                <h2 class="text-4xl font-bold mt-2">What Campers Say</h2>
+            </div>
+            
+            <!-- Marquee Container -->
+            <div class="relative w-full overflow-hidden group">
+                <div class="flex gap-6 animate-marquee hover:pause w-max">
+                     <!-- Review Cards (Duplicated for infinite scroll effect) -->
+                     @foreach([
+                        ['name' => 'Budi Santoso', 'role' => 'Camper', 'text' => 'Pemandangan city light-nya juara banget! Fasilitas toilet bersih, listrik aman. Bakal balik lagi sih ini.'],
+                        ['name' => 'Siti Aminah', 'role' => 'Family Trip', 'text' => 'Cocok buat camping bareng keluarga. Anak-anak seneng banget sama suasananya. Ga terlalu dingin karena bawa sleeping bag sewaan sini.'],
+                        ['name' => 'Reza Rahardian', 'role' => 'Photographer', 'text' => 'Spot foto sunrise-nya terbaik di Bogor. Lautan awannya dapet banget pas pagi. Recommended buat hunter foto!'],
+                        ['name' => 'Diana Putri', 'role' => 'Glamping', 'text' => 'Nyobain glamping-nya seru. Ga repot bawa tenda, tinggal bawa badan. Pelayanan ramah banget.'],
+                         ['name' => 'Ahmad Dani', 'role' => 'Solo Camper', 'text' => 'Tenang, damai, dan syahdu. Tempat healing terbaik dari hiruk pikuk Jakarta. Kopi di kantinnya juga enak.'],
+                     ] as $review)
+                    <div class="w-[350px] bg-secondary-600/30 backdrop-blur-md border border-white/5 p-8 rounded-3xl flex-shrink-0">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-azure-400 to-azure-600 flex items-center justify-center text-white font-bold text-xl">
+                                {{ substr($review['name'], 0, 1) }}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">{{ $review['name'] }}</h4>
+                                <p class="text-xs text-azure-400">{{ $review['role'] }}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed">"{{ $review['text'] }}"</p>
+                        <div class="flex text-yellow-400 mt-4 text-sm gap-1">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                    </div>
+                    @endforeach
+                     <!-- Duplicate for Loop -->
+                    @foreach([
+                        ['name' => 'Budi Santoso', 'role' => 'Camper', 'text' => 'Pemandangan city light-nya juara banget! Fasilitas toilet bersih, listrik aman. Bakal balik lagi sih ini.'],
+                        ['name' => 'Siti Aminah', 'role' => 'Family Trip', 'text' => 'Cocok buat camping bareng keluarga. Anak-anak seneng banget sama suasananya. Ga terlalu dingin karena bawa sleeping bag sewaan sini.'],
+                        ['name' => 'Reza Rahardian', 'role' => 'Photographer', 'text' => 'Spot foto sunrise-nya terbaik di Bogor. Lautan awannya dapet banget pas pagi. Recommended buat hunter foto!'],
+                        ['name' => 'Diana Putri', 'role' => 'Glamping', 'text' => 'Nyobain glamping-nya seru. Ga repot bawa tenda, tinggal bawa badan. Pelayanan ramah banget.'],
+                         ['name' => 'Ahmad Dani', 'role' => 'Solo Camper', 'text' => 'Tenang, damai, dan syahdu. Tempat healing terbaik dari hiruk pikuk Jakarta. Kopi di kantinnya juga enak.'],
+                     ] as $review)
+                    <div class="w-[350px] bg-secondary-600/30 backdrop-blur-md border border-white/5 p-8 rounded-3xl flex-shrink-0">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-azure-400 to-azure-600 flex items-center justify-center text-white font-bold text-xl">
+                                {{ substr($review['name'], 0, 1) }}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white">{{ $review['name'] }}</h4>
+                                <p class="text-xs text-azure-400">{{ $review['role'] }}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed">"{{ $review['text'] }}"</p>
+                        <div class="flex text-yellow-400 mt-4 text-sm gap-1">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+    <!-- Ticket/Packages Horizontal Scroll -->
         <section id="ticket" class="py-24 bg-midnight-800/50 backdrop-blur-sm">
             <div class="max-w-7xl mx-auto px-4 mb-12">
                 <h2 class="text-4xl font-bold text-center">Ticket & Packages</h2>
