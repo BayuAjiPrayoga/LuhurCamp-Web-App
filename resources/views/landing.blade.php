@@ -47,12 +47,12 @@
                 <!-- Mountain Layer 1 (Back) -->
                 <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80"
                     class="absolute bottom-0 left-0 w-full h-[70vh] object-cover opacity-40 mix-blend-overlay"
-                    style="mask-image: linear-gradient(to top, black, transparent);">
+                    style="mask-image: linear-gradient(to top, black, transparent);" fetchpriority="high">
 
                 <!-- Mountain Layer 2 (Front) -->
                 <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80"
                     class="absolute -bottom-20 left-0 w-full h-[60vh] object-cover mix-blend-normal opacity-80"
-                    style="mask-image: linear-gradient(to top, black 60%, transparent);">
+                    style="mask-image: linear-gradient(to top, black 60%, transparent);" fetchpriority="high">
             </div>
 
             <div
@@ -152,7 +152,7 @@
             <div class="absolute bottom-20 left-10 md:left-20 max-w-sm hidden lg:block">
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80"
-                        class="w-full h-48 object-cover group-hover:scale-110 transition duration-700">
+                        class="w-full h-48 object-cover group-hover:scale-110 transition duration-700" loading="lazy">
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent flex flex-col justify-end p-6">
                         <p class="text-azure-400 text-xs font-bold uppercase mb-1">Our Facilities</p>
@@ -382,7 +382,7 @@
         <footer class="py-12 border-t border-white/5 bg-midnight-950">
             <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex items-center gap-3 opacity-80">
-                    <img src="{{ asset('images/logoskycamp.png') }}" class="h-8 w-auto grayscale">
+                    <img src="{{ asset('images/logoskycamp.png') }}" class="h-8 w-auto grayscale" loading="lazy">
                     <span class="font-bold">LuhurCamp</span>
                 </div>
                 <div class="text-gray-500 text-sm">
@@ -452,7 +452,7 @@
 
                             card.innerHTML = `
                                     <div class="absolute inset-0 z-0">
-                                        <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700">
+                                        <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700" loading="lazy">
                                         <div class="absolute inset-0 bg-gradient-to-t from-midnight-900 via-secondary-600/50 to-transparent"></div>
                                     </div>
 
