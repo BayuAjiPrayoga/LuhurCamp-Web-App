@@ -77,6 +77,7 @@
 
     <!-- Footer -->
     <p class="text-center text-slate-400 text-sm mt-6">
-        © {{ date('Y') }} LuhurCamp. All rights reserved.
+        &copy; {{ date('Y') }} LuhurCamp. All rights reserved. <br>
+        <span class="block mt-1 text-xs">23552011194_BAYU AJI PRAYOOGA_TIF RP - 23 CNS A_UASWEB1</span>
     </p>
 </x-layouts.guest>
