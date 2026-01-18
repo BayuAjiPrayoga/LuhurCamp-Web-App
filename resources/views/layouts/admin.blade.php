@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +16,7 @@
     <!-- Styles & Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="antialiased">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
@@ -28,6 +30,10 @@
             <!-- Page Content -->
             <main class="p-6">
                 {{ $slot }}
+                <p class="text-slate-500 text-sm">
+                    &copy; {{ date('Y') }} LuhurCamp. All rights reserved. <br>
+                    <span class="text-xs">23552011194_BAYU AJI PRAYOOGA_TIF RP - 23 CNS A_UASWEB1</span>
+                </p>
             </main>
         </div>
     </div>
@@ -44,14 +50,14 @@
         }
 
         // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.classList.contains('modal-backdrop')) {
                 e.target.classList.remove('active');
             }
         });
 
         // Close modal on escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal-backdrop.active').forEach(el => {
                     el.classList.remove('active');
@@ -62,4 +68,5 @@
 
     @stack('scripts')
 </body>
+
 </html>
