@@ -123,6 +123,26 @@ Route::get('/debug-store', function () {
     return response()->json($results);
 });
 
+// Check route registration on server
+Route::get('/debug-routes', function () {
+    $routes = collect(\Route::getRoutes())->filter(function ($route) {
+        return str_contains($route->uri(), 'kavling');
+    })->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'methods' => $route->methods(),
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
+        ];
+    })->values();
+
+    return response()->json([
+        'kavling_routes' => $routes,
+        'admin_kavling_store_exists' => \Route::has('admin.kavling.store'),
+        'admin_kavling_store_url' => \Route::has('admin.kavling.store') ? route('admin.kavling.store') : 'N/A',
+    ]);
+});
+
 // Debug POST route - bypasses FormRequest to test raw store
 Route::match(['get', 'post'], '/debug-form-test', function (\Illuminate\Http\Request $request) {
     $results = ['method' => $request->method()];
@@ -264,7 +284,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             ->with('success', 'Kavling berhasil ditambahkan.');
     })->name('kavling.store');
 
-    // Master Data
+    // Master Data - keep resource but exclude store since we override it above
     Route::resource('kavling', KavlingController::class)->except(['store']);
     Route::resource('peralatan', PeralatanController::class);
 
