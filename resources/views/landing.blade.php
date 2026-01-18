@@ -3,6 +3,71 @@
 @section('title', 'LuhurCamp - The Beauty of Nature')
 
 @section('content')
+    <!-- JSON-LD SEO Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CampingSite",
+          "name": "LuhurCamp",
+          "image": "https://luhurcamp.com/images/hero-bg.jpg",
+          "description": "Premium camping experience at 1400 MDPL with city light views and complete facilities (Electricity, WiFi, Toilet).",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jl. Puncak Dua",
+            "addressLocality": "Bogor",
+            "addressRegion": "West Java",
+            "postalCode": "16810",
+            "addressCountry": "ID"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "-6.600000",
+            "longitude": "106.900000"
+          },
+          "url": "https://luhurcamp.com",
+          "telephone": "+6281234567890",
+          "priceRange": "$$",
+          "amenityFeature": [
+            { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": "True" },
+            { "@type": "LocationFeatureSpecification", "name": "Electricity", "value": "True" },
+            { "@type": "LocationFeatureSpecification", "name": "Toilet", "value": "True" },
+            { "@type": "LocationFeatureSpecification", "name": "Mushola", "value": "True" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Apakah jalan menuju lokasi aman untuk mobil?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ya, akses jalan sudah aspal dan beton. Mobil city car seperti Brio atau Agya bisa naik sampai parkiran utama."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Apakah ada sumber listrik di setiap kavling?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tentu! Setiap kavling dilengkapi dengan colokan listrik gratis untuk charge HP atau lampu tenda."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Bagaimana dengan sinyal HP?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sinyal Telkomsel dan XL 4G sangat kuat di sini. Kami juga menyediakan WiFi gratis di area cafe dan lobby."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <div
         class="min-h-screen bg-midnight-900 text-white font-sans selection:bg-azure-500 selection:text-white overflow-x-hidden">
 
