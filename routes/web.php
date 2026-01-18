@@ -191,6 +191,45 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Debug kavling store - inside admin middleware
+    Route::match(['get', 'post'], '/debug-kavling-store', function (\Illuminate\Http\Request $request) {
+        $results = ['method' => $request->method(), 'user' => auth()->user()->name ?? 'No user'];
+
+        // Check controller file
+        $filePath = app_path('Http/Controllers/Admin/KavlingController.php');
+        $content = file_get_contents($filePath);
+        $results['uses_manual_validation'] = str_contains($content, 'Manual validation') ? 'YES' : 'NO';
+        $results['file_modified'] = date('Y-m-d H:i:s', filemtime($filePath));
+
+        if ($request->isMethod('post')) {
+            try {
+                $validated = $request->validate([
+                    'nama' => 'required|string|max:100',
+                    'kapasitas' => 'required|integer|min:1',
+                    'harga_per_malam' => 'required|numeric|min:0',
+                ]);
+
+                $validated['slug'] = \Illuminate\Support\Str::slug($validated['nama']) . '-' . time();
+                $validated['status'] = 'aktif';
+
+                $kavling = \App\Models\Kavling::create($validated);
+                $results['create'] = 'SUCCESS - ID: ' . $kavling->id;
+            } catch (\Exception $e) {
+                $results['error'] = $e->getMessage();
+            }
+        } else {
+            return '<form method="POST">' . csrf_field() . '
+                <p>Nama: <input name="nama" value="Admin Test"></p>
+                <p>Kapasitas: <input name="kapasitas" type="number" value="4"></p>
+                <p>Harga: <input name="harga_per_malam" type="number" value="150000"></p>
+                <button type="submit">Test</button></form>
+                <p>Controller uses manual validation: ' . (str_contains($content, 'Manual validation') ? 'YES' : 'NO') . '</p>
+                <p>File modified: ' . date('Y-m-d H:i:s', filemtime($filePath)) . '</p>';
+        }
+
+        return response()->json($results);
+    })->name('debug-kavling-store');
+
     // Master Data
     Route::resource('kavling', KavlingController::class);
     Route::resource('peralatan', PeralatanController::class);
