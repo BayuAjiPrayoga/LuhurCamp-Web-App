@@ -233,7 +233,7 @@
             </div>
 
             <!-- Masonry Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px]">
+            <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px]">
                 <!-- Item 1 (Large) -->
                 <div class="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
@@ -426,26 +426,63 @@
                 .then(res => res.json())
                 .then(res => {
                     const container = document.getElementById('packages-list');
-                    if (res.success && res.data.length > 0) {
+                    if (res.data && res.data.length > 0) {
                         container.innerHTML = '';
                         res.data.forEach(item => {
                             const card = document.createElement('div');
                             card.className = 'bg-secondary-600 rounded-3xl p-6 w-[320px] flex-shrink-0 border border-white/5 hover:border-azure-500/50 transition duration-300 group relative overflow-hidden';
+                            // Use API image or fallback
                             const image = item.image ? `/storage/${item.image}` : 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80';
                             card.innerHTML = `
                                     <div class="absolute inset-0 z-0">
                                         <img src="${image}" class="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition duration-700" loading="lazy">
                                     </div>
-                                    <div class="relative z-10 h-[350px] flex flex-col">
-                                        <h3 class="text-2xl font-bold text-white mb-1">${item.nama}</h3>
-                                        <p class="text-white">IDR ${parseInt(item.harga_per_malam).toLocaleString('id-ID')}</p>
+                                    <div class="relative z-10 h-[350px] flex flex-col justify-end">
+                                        <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-azure-400 transition">${item.nama}</h3>
+                                        <p class="text-azure-200 font-medium mb-4">IDR ${parseInt(item.harga_per_malam).toLocaleString('id-ID')}</p>
+                                        <a href="https://wa.me/6281234567890?text=Halo%20LuhurCamp,%20saya%20mau%20booking%20${item.nama}" target="_blank" class="px-6 py-2 bg-azure-600 text-white text-center rounded-xl font-semibold hover:bg-azure-500 transition">Book Now</a>
                                     </div>
                                 `;
                             container.appendChild(card);
                         });
                     }
                 })
-                .catch(e => console.error('Error loading packages'));
+                .catch(e => console.error('Error loading packages', e));
+
+            // --- Fetch Gallery (Captured by You) ---
+            fetch('/api/v1/galleries')
+                .then(res => res.json())
+                .then(res => {
+                    const container = document.getElementById('gallery-grid');
+                    // Check standard Laravel resource wrapper 'data' or direct array
+                    const items = res.data || res; 
+                    
+                    if (items && items.length > 0) {
+                        container.innerHTML = '';
+                        // Limit to first 4 items for the grid
+                        const displayItems = items.slice(0, 4);
+                        
+                        displayItems.forEach((item, index) => {
+                            const div = document.createElement('div');
+                            // First item spans 2 cols and 2 rows (large), others are standard
+                            if (index === 0) {
+                                div.className = 'col-span-2 row-span-2 relative group overflow-hidden rounded-3xl cursor-pointer';
+                            } else {
+                                div.className = 'col-span-1 row-span-1 relative group overflow-hidden rounded-3xl cursor-pointer';
+                            }
+
+                            // Assuming item.image exists. Adjust property name if needed (e.g., item.file, item.url)
+                            const imageUrl = item.image ? `/storage/${item.image}` : 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80';
+                            
+                            div.innerHTML = `
+                                <img src="${imageUrl}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" alt="User captured moment">
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                            `;
+                            container.appendChild(div);
+                        });
+                    }
+                })
+                .catch(e => console.error('Error loading gallery', e));
 
             // --- Live Campers Widget Logic ---
             setTimeout(() => {
