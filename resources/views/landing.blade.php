@@ -285,6 +285,62 @@
         </div>
     </section>
 
+    <!-- Instagram Feed / UGC Section -->
+    <section class="py-24 relative bg-midnight-950 overflow-hidden">
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-20 w-72 h-72 bg-azure-500/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-secondary-500/10 rounded-full blur-[100px]"></div>
+
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <span class="text-azure-500 font-bold uppercase tracking-widest text-sm">#LuhurCampMoments</span>
+                <h2 class="text-4xl font-bold mt-2">Captured by You</h2>
+                <div class="flex items-center justify-center gap-2 mt-4 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.85-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.163 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <span>Follow <a href="#" class="text-white hover:text-azure-400 transition font-bold">@luhurcamp</a> on Instagram</span>
+                </div>
+            </div>
+
+            <!-- Masonry Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px]">
+                <!-- Item 1 (Large) -->
+                <div class="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur overflow-hidden"><img src="https://i.pravatar.cc/100?img=12" class="w-full h-full object-cover"></div>
+                            <span class="text-white text-sm font-medium">@alex_adventurer</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="col-span-1 row-span-1 relative group overflow-hidden rounded-3xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                </div>
+                 <!-- Item 3 -->
+                 <div class="col-span-1 row-span-1 relative group overflow-hidden rounded-3xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1537225228614-56cc3556d7ed?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                </div>
+                <!-- Item 4 (Wide) -->
+                 <div class="col-span-2 row-span-1 relative group overflow-hidden rounded-3xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1496947853313-7992541a2a8f?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur overflow-hidden"><img src="https://i.pravatar.cc/100?img=32" class="w-full h-full object-cover"></div>
+                            <span class="text-white text-sm font-medium">@sarah.hikes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center md:hidden">
+                 <a href="#" class="inline-flex items-center gap-2 text-azure-400 border border-azure-400/30 px-6 py-3 rounded-full hover:bg-azure-400/10 transition">
+                    View More on Instagram
+                 </a>
+            </div>
+        </div>
+    </section>
+
         <!-- Packages & Opening Hours Section -->
         <section id="packages" class="py-24 relative">
             <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
