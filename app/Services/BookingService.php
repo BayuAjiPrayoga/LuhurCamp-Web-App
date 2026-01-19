@@ -148,7 +148,7 @@ class BookingService
     protected function sendBookingNotification(Booking $booking, string $title, string $body): void
     {
         $booking->loadMissing('user');
-        
+
         if ($booking->user && $booking->user->fcm_token) {
             $this->fcmService->sendToDevice(
                 $booking->user->fcm_token,
