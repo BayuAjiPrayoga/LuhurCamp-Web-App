@@ -1,7 +1,7 @@
 # LuhurCamp
 
 <p align="center">
-  <img src="storage/app/public/logoskycamp.png" alt="LuhurCamp Logo" width="120">
+  <img src="docs/logoskycamp.png" alt="LuhurCamp Logo" width="120">
 </p>
 
 <p align="center">
@@ -99,8 +99,8 @@ Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan per
 | :------- | :-------- |
 | Framework | [Laravel 10](https://laravel.com) |
 | Bahasa | PHP 8.1+ |
-| Database | PostgreSQL |
-| Autentikasi | Laravel Sanctum |
+| Database | MySQL |
+| Autentikasi | Laravel Sanctum Session Cookie |
 | API | RESTful API |
 
 ### Frontend
@@ -139,7 +139,12 @@ Dokumen teknis detail tersedia di folder `/docs`:
 
 ## Developer
 
-**23552011194_BAYU AJI PRAYOGA_TIF RP - 23 CNS A_UASWEB1**
+| | |
+| :--- | :--- |
+| **NPM** | 23552011194 |
+| **Nama** | BAYU AJI PRAYOGA |
+| **Kelas** | TIF RP - 23 CNS A |
+| **Mata Kuliah** | Pemrograman Web 1 (UAS) |
 
 ---
 
