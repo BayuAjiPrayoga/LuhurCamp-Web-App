@@ -1,157 +1,146 @@
-# LuhurCamp - Camping Ground Booking System
+# LuhurCamp
 
-![LuhurCamp Logo](https://via.placeholder.com/150x150.png?text=LuhurCamp)
+<p align="center">
+  <img src="storage/app/public/logoskycamp.png" alt="LuhurCamp Logo" width="120">
+</p>
 
-**LuhurCamp** adalah sistem manajemen reservasi _camping ground_ modern yang terdiri dari Aplikasi Mobile (untuk pelanggan) dan Panel Admin Web (untuk pengelola). Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan peralatan, dan operasional harian di lokasi camping.
+<p align="center">
+  <strong>Sistem Manajemen Reservasi Camping Ground</strong>
+</p>
 
----
-
-## 📚 Dokumentasi Lengkap
-
-Dokumen teknis detail tersedia terpisah:
-
--   **[SRS (Software Requirement Specification)](docs/SRS.md)**: Detail kebutuhan fungsional sistem.
--   **[SDD (System Design Document)](docs/SDD.md)**: Arsitektur sistem, ERD, dan Topologi.
--   **[Technical Specification](docs/Technical_Spec.md)**: Stack teknologi dan standar kode.
--   **[Business Logic](docs/Business_Logic.md)**: Alur bisnis, flowchart, dan logika sistem.
--   **[Project Plan](docs/Project_Plan.md)**: Timeline dan roadmap pengembangan.
-
----
-
-## 🌟 Fitur Utama
-
-### 📱 Mobile App (Pelanggan)
-
--   **Booking Mudah**: Pilih tanggal check-in/out dan lihat ketersediaan kavling secara _real-time_.
--   **Sewa Peralatan**: Tambahkan tenda, matras, dan alat masak langsung ke dalam pesanan.
--   **Manajemen Profil**: Ganti foto profil, update info data diri, dan ganti password.
--   **Riwayat Pesanan**: Pantau status booking (Pending, Menunggu Konfirmasi, Confirmed, Selesai).
--   **Upload Bukti Bayar**: Konfirmasi pembayaran manual dengan upload struk transfer.
--   **QR Code Ticket**: Dapatkan tiket masuk digital berupa QR Code setelah pembayaran diverifikasi.
--   **Galeri & Info**: Lihat foto-foto lokasi dan informasi terbaru.
-
-### � Screenshots Mobile App
-
-|                              Login/Register                              |                              Dashboard                              |
-| :-------------------------------------------------------------: | :----------------------------------------------------------------: |
-| ![Login](docs/img%20asset/Screenshot%202026-01-09%20221832.png) | ![Register](docs/img%20asset/Screenshot%202026-01-09%20221917.png) |
-
-|                              Kavling                              |                              Peralatan                              |
-| :------------------------------------------------------------: | :-----------------------------------------------------------------: |
-| ![Home](docs/img%20asset/Screenshot%202026-01-09%20221953.png) | ![Dashboard](docs/img%20asset/Screenshot%202026-01-09%20222043.png) |
-
-|                              Daftar Booking                              |                              Verifikasi                              |
-| :--------------------------------------------------------------------: | :----------------------------------------------------------------------: |
-| ![Kavling List](docs/img%20asset/Screenshot%202026-01-09%20222112.png) | ![Kavling Detail](docs/img%20asset/Screenshot%202026-01-09%20222254.png) |
-
-|                              Galeri                              |                              Laporan                              |
-| :--------------------------------------------------------------------: | :-------------------------------------------------------------------: |
-| ![Booking Form](docs/img%20asset/Screenshot%202026-01-09%20222534.png) | ![My Bookings](docs/img%20asset/Screenshot%202026-01-09%20222558.png) |
-
-|                              Profil                              |                              Pengumuman                              |
-| :---------------------------------------------------------------: | :------------------------------------------------------------------: |
-| ![Gallery](docs/img%20asset/Screenshot%202026-01-09%20222617.png) | ![Pengumuman](docs/img%20asset/Screenshot%202026-01-09%20222636.png) |
-
-### �💻 Web Admin (Pengelola)
-
--   **Dashboard**: Ringkasan okupansi, pendapatan, dan booking terbaru.
--   **Manajemen Master Data**: CRUD Kavling (foto, harga) dan Peralatan (stok).
--   **Verifikasi Pembayaran**: Terima atau tolak bukti bayar pelanggan.
--   **Smart Scanner System**:
-    -   Scan QR Code tamu untuk Check-in & Check-out.
-    -   Optimized Camera View (Larger Scan Area).
-    -   Support Re-scanning flow.
--   **Laporan**: Cetak laporan pendapatan dan tingkat hunian (PDF).
--   **Manajemen Galeri**: Moderasi foto yang diupload pengguna.
+<p align="center">
+  <a href="#fitur-utama">Fitur</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#dokumentasi">Dokumentasi</a> •
+  <a href="#repository-terkait">Repository</a> •
+  <a href="#developer">Developer</a>
+</p>
 
 ---
 
-## 🛠️ Technology Stack
+## Tentang
 
-### Backend (API & Web Panel)
+**LuhurCamp** adalah sistem manajemen reservasi _camping ground_ modern yang terdiri dari **Panel Admin Web** (untuk pengelola) dan **Aplikasi Mobile** (untuk pelanggan). 
 
--   **Framework**: [Laravel 10](https://laravel.com)
--   **Language**: PHP 8.1+
--   **Database**: Posgresql
--   **Styling**: Tailwind CSS (via Vite)
--   **Auth**: Laravel Sanctum Session Cookie
+Sistem ini bekerja secara terintegrasi:
+- **Web App** menyediakan landing page informatif, sistem registrasi & login, serta panel admin untuk pengelolaan operasional camping ground.
+- **Mobile App** dapat diunduh setelah pengguna melakukan registrasi melalui web, untuk melakukan pemesanan kavling, penyewaan peralatan, dan mendapatkan tiket QR Code.
 
-### Frontend (Mobile App)
-
--   **Framework**: [Flutter](https://flutter.dev) (Dart 3.x)
--   **State Management**: Riverpod
--   **Routing**: GoRouter
--   **HTTP Client**: Dio
+Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan peralatan, dan operasional harian di lokasi camping.
 
 ---
 
-## 🚀 Cara Instalasi
+## Fitur Utama
 
-### Prasyarat
+### 🏠 Halaman Publik
+- **Landing Page** - Informasi lengkap tentang camping ground dan fasilitasnya
+- **Registrasi & Login** - Sistem autentikasi pengguna untuk akses mobile app
 
--   PHP >= 8.1, Composer
--   Node.js & NPM
--   Flutter SDK
--   MySQL Server
-
-### 1. Setup Backend (Laravel)
-
-```bash
-# Clone repository
-git clone https://github.com/username/luhurcamp.git
-cd luhurcamp
-
-# Install dependencies
-composer install
-npm install && npm run build
-
-# Setup Environment
-cp .env.example .env
-# Edit .env sesuaikan database DB_DATABASE, DB_USERNAME, dll.
-
-# Generate Key & Migrate
-php artisan key:generate
-php artisan migrate --seed
-php artisan storage:link
-
-# Jalankan Server
-php artisan serve --host=0.0.0.0 --port=8000
-```
-
-### 2. Setup Mobile App (Flutter)
-
-> 📱 **Mobile App sekarang berada di repository terpisah:** [SkyCamp_Mobile](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile)
-
-```bash
-# Clone repository mobile
-git clone https://github.com/BayuAjiPrayoga/SkyCamp_Mobile.git
-cd SkyCamp_Mobile
-
-# Install dependencies
-flutter pub get
-
-# Konfigurasi API
-# Buka lib/core/config/api_config.dart dan sesuaikan baseUrl dengan IP server Laravel.
-
-# Jalankan App
-flutter run
-```
+### 🔧 Panel Admin
+- **Dashboard** - Ringkasan okupansi, pendapatan, dan booking terbaru
+- **Master Data Kavling** - CRUD kavling dengan foto dan harga
+- **Master Data Peralatan** - Manajemen stok peralatan camping
+- **Daftar Booking** - Melihat dan mengelola semua pesanan
+- **Verifikasi Pembayaran** - Terima atau tolak bukti bayar pelanggan
+- **Smart Scanner** - Scan QR Code untuk Check-in & Check-out
+- **Laporan** - Cetak laporan pendapatan dan tingkat hunian (PDF)
+- **Galeri** - Kelola foto-foto lokasi camping
+- **Pengaturan Profil** - Manajemen profil admin
+- **Pengumuman** - Kelola pengumuman untuk pengguna
 
 ---
 
-## 📂 Repository Terkait
+## Screenshots
 
-| Repository                                                               | Deskripsi                         |
-| :----------------------------------------------------------------------- | :-------------------------------- |
+### Halaman Publik
+
+|                              Landing Page                              |                              Landing Page (lanjutan)                              |
+| :--------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| ![Landing Page](docs/documentation/Landing%20page%201.png) | ![Landing Page Lanjutan](docs/documentation/Landing%20page%20terusan.png) |
+
+|                              Halaman Welcome                              |                              Halaman Registrasi                              |
+| :-----------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
+| ![Welcome](docs/documentation/welcome%20page.png) | ![Registrasi](docs/documentation/registrasi%20page.png) |
+
+|                              Halaman Login                              |
+| :--------------------------------------------------------------------: |
+| ![Login](docs/documentation/login%20page.png) |
+
+### Panel Admin
+
+|                              Dashboard Admin                              |                              Master Data Kavling                              |
+| :-----------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| ![Dashboard](docs/documentation/Dashboard%20Admin.png) | ![Kavling](docs/documentation/Master%20data%20kavling.png) |
+
+|                              Master Data Peralatan                              |                              Daftar Booking                              |
+| :-----------------------------------------------------------------------------: | :----------------------------------------------------------------------: |
+| ![Peralatan](docs/documentation/mater%20data%20peralatan.png) | ![Daftar Booking](docs/documentation/transaksi%20daftar%20booking.png) |
+
+|                              QR Scanner                              |                              Verifikasi Pembayaran                              |
+| :------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+| ![QR Scanner](docs/documentation/transaksi%20daftar%20booking%20QR%20scanner.png) | ![Verifikasi](docs/documentation/transaksi%20verifikasi.png) |
+
+|                              Halaman Galeri                              |                              Halaman Laporan                              |
+| :----------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| ![Galeri](docs/documentation/galeri%20page.png) | ![Laporan](docs/documentation/laporan%20page.png) |
+
+|                              Pengaturan Profil                              |                              Pengaturan Pengumuman                              |
+| :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+| ![Profil](docs/documentation/Pengaturan%20profil.png) | ![Pengumuman](docs/documentation/Pengaturan%20Pengumuman.png) |
+
+---
+
+## Tech Stack
+
+### Backend
+
+| Komponen | Teknologi |
+| :------- | :-------- |
+| Framework | [Laravel 10](https://laravel.com) |
+| Bahasa | PHP 8.1+ |
+| Database | PostgreSQL |
+| Autentikasi | Laravel Sanctum |
+| API | RESTful API |
+
+### Frontend
+
+| Komponen | Teknologi |
+| :------- | :-------- |
+| Template Engine | Blade Templates |
+| Styling | Tailwind CSS |
+| Build Tool | Vite |
+| JavaScript | Alpine.js |
+
+---
+
+## Dokumentasi
+
+Dokumen teknis detail tersedia di folder `/docs`:
+
+| Dokumen | Deskripsi |
+| :------ | :-------- |
+| [SRS](docs/SRS.md) | Software Requirement Specification |
+| [SDD](docs/SDD.md) | System Design Document |
+| [Technical Spec](docs/Technical_Spec.md) | Stack teknologi dan standar kode |
+| [Business Logic](docs/Business_Logic.md) | Alur bisnis dan flowchart |
+| [Project Plan](docs/Project_Plan.md) | Timeline pengembangan |
+
+---
+
+## Repository Terkait
+
+| Repository | Deskripsi |
+| :--------- | :-------- |
 | [LuhurCamp-Web-App](https://github.com/BayuAjiPrayoga/LuhurCamp-Web-App) | Backend Laravel + Web Admin Panel |
-| [SkyCamp_Mobile](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile)       | Aplikasi Mobile Flutter           |
+| [SkyCamp_Mobile](https://github.com/BayuAjiPrayoga/SkyCamp_Mobile) | Aplikasi Mobile Flutter |
 
 ---
 
-## 👥 Kontributor
+## Developer
 
--   **Tim Pengembang LuhurCamp**
+**23552011194_BAYU AJI PRAYOGA_TIF RP - 23 CNS A_UASWEB1**
 
 ---
 
-© 2025 LuhurCamp. All Rights Reserved.
+<p align="center">© 2025 LuhurCamp. All Rights Reserved.</p>
