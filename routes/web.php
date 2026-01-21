@@ -206,6 +206,17 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Guest Registration Routes
+Route::get('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+Route::get('/download-app', function () {
+    return view('auth.download-app');
+})->name('download-app');
+
+Route::get('/registration-success', function () {
+    return view('auth.registration-success');
+})->name('registration-success');
+
 // Admin Routes (Protected)
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     // Dashboard

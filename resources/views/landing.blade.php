@@ -53,10 +53,16 @@
                     <a href="#contact" class="hover:text-white transition">Contact</a>
                 </div>
 
-                <a href="{{ route('login') }}"
-                    class="px-6 py-2 bg-gradient-to-r from-azure-600 to-azure-500 rounded-full text-sm font-semibold hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] transition-all transform hover:scale-105">
-                    Login
-                </a>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('register') }}"
+                        class="px-6 py-2 border-2 border-white/50 text-white rounded-full text-sm font-semibold hover:bg-white/10 hover:border-white transition-all transform hover:scale-105">
+                        Daftar
+                    </a>
+                    <a href="{{ route('login') }}"
+                        class="px-6 py-2 bg-gradient-to-r from-azure-600 to-azure-500 rounded-full text-sm font-semibold hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] transition-all transform hover:scale-105">
+                        Login
+                    </a>
+                </div>
             </div>
         </nav>
 

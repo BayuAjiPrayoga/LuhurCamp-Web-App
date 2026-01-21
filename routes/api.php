@@ -57,10 +57,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/health', function () {
         try {
             \Illuminate\Support\Facades\DB::connection()->getPdo();
-            
+
             // Check if fcm_token column exists
             $hasFcmColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'fcm_token');
-            
+
             return response()->json([
                 'status' => 'ok',
                 'database' => 'connected',
@@ -76,66 +76,7 @@ Route::prefix('v1')->group(function () {
         }
     });
 
-    // Test FCM Notification Endpoint
-    Route::post('/test-fcm', function (\Illuminate\Http\Request $request) {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'title' => 'required|string',
-            'body' => 'required|string',
-        ]);
 
-        $user = \App\Models\User::find($request->user_id);
-        
-        if (!$user) {
-            return response()->json(['success' => false, 'message' => 'User not found'], 404);
-        }
-        
-        if (!$user->fcm_token) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'User has no FCM token',
-                'user' => $user->name
-            ], 400);
-        }
-
-        $fcmService = new \App\Services\FCMService();
-        $result = $fcmService->sendToDevice(
-            $user->fcm_token,
-            $request->title,
-            $request->body,
-            ['type' => 'test', 'timestamp' => now()->toISOString()]
-        );
-
-        return response()->json([
-            'success' => $result,
-            'message' => $result ? 'Notification sent!' : 'Failed to send notification',
-            'user' => $user->name,
-            'fcm_token' => substr($user->fcm_token, 0, 30) . '...',
-        ]);
-    });
-
-    // Test FCM Topic Notification
-    Route::post('/test-fcm-topic', function (\Illuminate\Http\Request $request) {
-        $request->validate([
-            'topic' => 'required|string',
-            'title' => 'required|string',
-            'body' => 'required|string',
-        ]);
-
-        $fcmService = new \App\Services\FCMService();
-        $result = $fcmService->sendToTopic(
-            $request->topic,
-            $request->title,
-            $request->body,
-            ['type' => 'test_topic', 'timestamp' => now()->toISOString()]
-        );
-
-        return response()->json([
-            'success' => $result,
-            'message' => $result ? 'Topic notification sent!' : 'Failed to send',
-            'topic' => $request->topic,
-        ]);
-    });
 
     Route::get('/galleries', [GalleryController::class, 'index']);
 
