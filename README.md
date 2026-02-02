@@ -55,9 +55,9 @@ Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan per
 
 #### 🔐 Akun Demo Admin
 
-| Username | Password      |
-| :------- | :------------ |
-| `admin`  | `password123` |
+| Username              | Password      |
+| :-------------------- | :------------ |
+| `admin@luhurcamp.com` | `password123` |
 
 ---
 
