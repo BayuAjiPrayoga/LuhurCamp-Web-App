@@ -53,6 +53,12 @@ Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan per
 - **Pengaturan Profil** - Manajemen profil admin
 - **Pengumuman** - Kelola pengumuman untuk pengguna
 
+#### 🔐 Akun Demo Admin
+
+| Username | Password      |
+| :------- | :------------ |
+| `admin`  | `password123` |
+
 ---
 
 ## Screenshots
