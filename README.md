@@ -10,8 +10,8 @@
 
 <p align="center">
   <a href="#fitur-utama">Fitur</a> •
-  <a href="#demo">Demo</a> •
   <a href="#screenshots">Screenshots</a> •
+  <a href="#demo">Demo</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#dokumentasi">Dokumentasi</a> •
   <a href="#repository-terkait">Repository</a> •
@@ -55,15 +55,6 @@ Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan per
 
 ---
 
-## Demo
-
-|                                   🌐 Demo Aplikasi Web                                    |                                    📱 Demo Aplikasi Mobile                                     |
-| :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
-| <img src="docs/documentation/DemoWeb.gif" alt="Demo Aplikasi Web LuhurCamp" width="100%"> | <img src="docs/documentation/demomobile.gif" alt="Demo Aplikasi Mobile LuhurCamp" width="280"> |
-|                      _Demo navigasi dan fitur utama web admin panel_                      |                       _Demo penggunaan aplikasi mobile untuk reservasi_                        |
-
----
-
 ## Screenshots
 
 ### Halaman Publik
@@ -101,6 +92,17 @@ Proyek ini bertujuan untuk mendigitalkan proses pemesanan kavling, penyewaan per
 |                   Pengaturan Profil                   |                     Pengaturan Pengumuman                     |
 | :---------------------------------------------------: | :-----------------------------------------------------------: |
 | ![Profil](docs/documentation/Pengaturan%20profil.png) | ![Pengumuman](docs/documentation/Pengaturan%20Pengumuman.png) |
+
+---
+
+## Demo
+
+|                                   🌐 Demo Aplikasi Web                                    |                                    📱 Demo Aplikasi Mobile                                     |
+| :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
+| <img src="docs/documentation/DemoWeb.gif" alt="Demo Aplikasi Web LuhurCamp" width="100%"> | <img src="docs/documentation/demomobile.gif" alt="Demo Aplikasi Mobile LuhurCamp" width="280"> |
+|                      _Demo navigasi dan fitur utama web admin panel_                      |                       _Demo penggunaan aplikasi mobile untuk reservasi_                        |
+
+> ⚠️ **Catatan:** Jika video demo tidak muncul, kemungkinan karena ukuran file terlalu besar. Silakan tunggu beberapa saat atau klik gambar untuk melihat langsung.
 
 ---
 
